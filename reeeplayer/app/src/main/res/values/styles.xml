@@ -27,4 +27,12 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="progressBarStyle">
+        <item name="android:indeterminateDrawable">@drawable/progress_medium_white</item>
+        <item name="android:minWidth">16dip</item>
+        <item name="android:maxWidth">16dip</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:maxHeight">16dip</item>
+    </style>
 </resources>

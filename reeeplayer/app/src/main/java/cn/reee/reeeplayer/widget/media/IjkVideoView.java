@@ -32,6 +32,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.widget.TableLayout;
@@ -52,6 +53,8 @@ import cn.reee.reeeplayer.R;
 import cn.reee.reeeplayer.application.Settings;
 import cn.reee.reeeplayer.services.MediaPlayerService;
 import cn.reee.reeeplayer.util.FileToolUtils;
+import cn.reee.reeeplayer.util.ScreenUtil;
+import cn.reee.reeeplayer.view.AdapterView.TextureVideoViewOutlineProvider;
 import cn.reee.reeeplayer.widget.preference.ReeeGetImp;
 import tv.danmaku.ijk.media.player.AndroidMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -418,7 +421,8 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     IMediaPlayer.OnPreparedListener mPreparedListener = new IMediaPlayer.OnPreparedListener() {
         public void onPrepared(IMediaPlayer mp) {
             mPrepareEndTime = System.currentTimeMillis();
-            mHudViewHolder.updateLoadCost(mPrepareEndTime - mPrepareStartTime);
+            if (mHudViewHolder != null)
+                mHudViewHolder.updateLoadCost(mPrepareEndTime - mPrepareStartTime);
             mCurrentState = STATE_PREPARED;
 
             // Get the capabilities of the player for this stream
@@ -468,6 +472,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                     start();
                 }
             }
+            changeTextureViewShowType();
         }
     };
 
@@ -600,7 +605,8 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         @Override
         public void onSeekComplete(IMediaPlayer mp) {
             mSeekEndTime = System.currentTimeMillis();
-            mHudViewHolder.updateSeekCost(mSeekEndTime - mSeekStartTime);
+            if (mHudViewHolder != null)
+                mHudViewHolder.updateSeekCost(mSeekEndTime - mSeekStartTime);
         }
     };
 
@@ -745,7 +751,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         if (isInPlaybackState() && mMediaController != null) {
             toggleMediaControlsVisiblity();
         }
-        return false;
+        return super.onTouchEvent(ev);
     }
 
     @Override
@@ -1320,5 +1326,19 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 //            ((IjkMediaPlayer) mMediaPlayer).native_TsGetTsFinished(ts_files, size);
 //        else
 //            Log.i("IjkViewView", "ts_files==null 释放失败！");
+    }
+
+    protected void changeTextureViewShowType() {
+        if (mRenderView == null) return;
+        ViewGroup.LayoutParams layoutParams = mRenderView.getView().getLayoutParams();
+        layoutParams.width = (int) ((ScreenUtil.getScreenWidthSize(getContext()) - ((ScreenUtil.getInstance(getContext()).getHorizontalScale()) * 80)));
+        layoutParams.height = layoutParams.width * 9 / 16;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mRenderView.getView() != null) {
+                mRenderView.getView().setOutlineProvider(new TextureVideoViewOutlineProvider(
+                        ScreenUtil.dp2px(getContext(), 10), layoutParams.height, layoutParams.width));
+                mRenderView.getView().setClipToOutline(true);
+            }
+        }
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#ee5514" />
+
+    <cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout
+        android:id="@+id/first_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top_view"
+        android:layout_marginTop="50dp">
+
+        <cn.reee.reeeplayer.player.ReeeIjkplayer
+            android:id="@+id/reeeIjkplayer_layout"
+            android:layout_width="670px"
+            android:layout_height="376.99px"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center" />
+    </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>
+
+    <Button
+        android:id="@+id/bg_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="PLAY" />
+</RelativeLayout>

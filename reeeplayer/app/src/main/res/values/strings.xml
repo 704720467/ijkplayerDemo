@@ -69,5 +69,6 @@
     <string name="VideoView_player_AndroidMediaPlayer">Player: AndroidMediaPlayer</string>
     <string name="VideoView_player_IjkMediaPlayer">Player: IjkMediaPlayer</string>
     <string name="VideoView_player_IjkExoMediaPlayer">Player: IjkExoMediaPlayer</string>
+    <string name="please_wait" translatable="false">请稍候&#8230;</string>
 
 </resources>

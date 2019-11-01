@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginLeft="10dip"
-    android:paddingBottom="2dip"
-    android:paddingTop="2dip" >
+    android:paddingTop="2dip"
+    android:paddingBottom="2dip">
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#a1ffffff"
         android:textSize="15sp" />
 
     <TextView
@@ -16,6 +17,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
+        android:textColor="#a1ffffff"
         android:textSize="15sp" />
 
 </TableRow>
