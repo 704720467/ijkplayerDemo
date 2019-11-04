@@ -1,13 +1,19 @@
 package cn.reee.reeeplayer.player;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,11 +23,16 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import cn.reee.reeeplayer.R;
+import cn.reee.reeeplayer.util.OrientationUtils;
+import cn.reee.reeeplayer.util.ScreenUtil;
 import cn.reee.reeeplayer.util.TimeUtil;
+import cn.reee.reeeplayer.view.AdapterView.TextureVideoViewOutlineProvider;
 import cn.reee.reeeplayer.widget.media.IjkVideoView;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 import android.view.View.OnClickListener;
+
+import androidx.appcompat.widget.TintContextWrapper;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -54,6 +65,14 @@ public class ReeeIjkplayer extends FrameLayout implements OnClickListener
     private String mVideoPath;//播放地址
 
     private boolean mMoveSeekBar = false;//是否在拖动SeekBar 防止拖动的时候 进度条来回的跳
+    private OrientationUtils orientationUtils;
+    private boolean isFullScreen = false;//是否是全屏
+
+    private ViewGroup mNormalParentView;//非全屏播放时父布局 只有切换了全屏后才存在
+    private ViewGroup.LayoutParams mNormalLayoutParams;//非全屏播放时 布局的基本参数
+    private ViewGroup mFullParentView;//全屏播放父布局 只有切换了全屏后才存在
+
+    private boolean isRoundAnglePlayer = false;//播放器是否时圆角  true 播放器时圆角，false播放器不是圆角
 
 
     public ReeeIjkplayer(Context context) {
@@ -76,6 +95,7 @@ public class ReeeIjkplayer extends FrameLayout implements OnClickListener
         initVideoView();
         initSeekBar();
         addView(mRootLayout);
+        orientationUtils = new OrientationUtils((Activity) getContext());
     }
 
     public int getLayout() {
@@ -104,6 +124,8 @@ public class ReeeIjkplayer extends FrameLayout implements OnClickListener
         mVideoView.setHudView(mHudView);//加载播放数据信息
         mVideoView.setOnPreparedListener(this);
         mVideoView.setOnInfoListener(this);
+        if (isRoundAnglePlayer)
+            changeTextureViewShowType();
     }
 
     private void initSeekBar() {
@@ -157,6 +179,8 @@ public class ReeeIjkplayer extends FrameLayout implements OnClickListener
                 toChangeVideoPlayerState();
                 break;
             case R.id.fullscreen://全屏按钮
+                if (isFullScreen) toNormalScreen();
+                else toFullScreen();
                 break;
             case R.id.start://中间开始按钮
                 break;
@@ -191,6 +215,86 @@ public class ReeeIjkplayer extends FrameLayout implements OnClickListener
         if (mBottomProgressBar != null && !mMoveSeekBar) {
             mBottomProgressBar.setMax(duration);
             mBottomProgressBar.setProgress(currentPosition);
+        }
+    }
+
+    /**
+     * Get activity from context object
+     *
+     * @param context something
+     * @return object of Activity or null if it is not Activity
+     */
+    public static Activity scanForActivity(Context context) {
+        if (context == null) return null;
+
+        if (context instanceof Activity) {
+            return (Activity) context;
+        } else if (context instanceof TintContextWrapper) {
+            return scanForActivity(((TintContextWrapper) context).getBaseContext());
+        } else if (context instanceof ContextWrapper) {
+            return scanForActivity(((ContextWrapper) context).getBaseContext());
+        }
+
+        return null;
+    }
+
+    protected void toFullScreen() {
+        orientationUtils.resolveByClick();
+        mNormalLayoutParams = getLayoutParams();
+        mNormalParentView = (ViewGroup) getParent();
+        //1.将当前的播放View从原先布局移除
+        mNormalParentView.removeView(this);
+        //2.修改播放布局的宽高比
+        mVideoView.getLayoutParams().width = LayoutParams.MATCH_PARENT;
+        mVideoView.getLayoutParams().height = LayoutParams.MATCH_PARENT;
+        if (isRoundAnglePlayer)
+            mVideoView.setClipToOutline(false);
+
+        //3.将播放视频布局 添加到新的布局里面
+        if (mFullParentView == null) {
+            mFullParentView = new FrameLayout(getContext());
+            mFullParentView.setBackgroundColor(Color.BLACK);
+        }
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        lp.gravity = Gravity.CENTER;
+        mFullParentView.addView(this, lp);
+        //4.将全屏时 播放布局添加到根布局中
+        ViewGroup vp = (scanForActivity(getContext())).findViewById(Window.ID_ANDROID_CONTENT);
+        LayoutParams lpParent = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        vp.addView(mFullParentView, lpParent);
+        isFullScreen = true;
+    }
+
+    protected void toNormalScreen() {
+        orientationUtils.resolveByClick();
+        //1.将当前的播放View从原先布局移除
+        mFullParentView.removeView(this);
+        //2.移除全屏布局
+        ViewGroup vp = (scanForActivity(getContext())).findViewById(Window.ID_ANDROID_CONTENT);
+        vp.removeView(mFullParentView);
+        //3.开启圆角模式
+        if (isRoundAnglePlayer)
+            mVideoView.setClipToOutline(true);
+        //4.将播放视频布局 添加到正常播放的（非全屏） 布局里面
+        setLayoutParams(mNormalLayoutParams);//将播放器本身的宽高重新还原
+        mNormalParentView.addView(this);
+        mNormalParentView.requestLayout();
+        isFullScreen = false;
+    }
+
+    protected void changeTextureViewShowType() {
+        if (mVideoView == null) return;
+        ViewGroup.LayoutParams layoutParams = mVideoView.getLayoutParams();
+        if (layoutParams.width <= 0 || layoutParams.height <= 0) {
+            layoutParams.width = (int) ((ScreenUtil.getScreenWidthSize(getContext()) - ((ScreenUtil.getInstance(getContext()).getHorizontalScale()) * 80)));
+            layoutParams.height = layoutParams.width * 9 / 16;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mVideoView != null) {
+                mVideoView.setOutlineProvider(new TextureVideoViewOutlineProvider(
+                        ScreenUtil.dp2px(getContext(), 10), layoutParams.height, layoutParams.width));
+                mVideoView.setClipToOutline(true);
+            }
         }
     }
 
@@ -259,6 +363,13 @@ public class ReeeIjkplayer extends FrameLayout implements OnClickListener
         this.mVideoPath = videoPath;
         if (mVideoView != null)
             mVideoView.setVideoPath(mVideoPath);
+    }
+
+    /**
+     * 是否可以时圆角播放器
+     */
+    public void setRoundAnglePlayer(boolean isRoundAnglePlayer) {
+        this.isRoundAnglePlayer = isRoundAnglePlayer;
     }
 
     public void start() {

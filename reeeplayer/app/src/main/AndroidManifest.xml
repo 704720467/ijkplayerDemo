@@ -18,7 +18,7 @@
         <activity
             android:name=".VideoPlayerTestActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="user">
+            android:screenOrientation="portrait">
 
         </activity>
         <activity

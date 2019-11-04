@@ -25,7 +25,8 @@ public class VideoPlayerTestActivity extends BaseActivity {
 
     private void initData() {
         //老播放器能播放的
-        mVideoPath = "http://qiniunstadium.reee.cn/m3u8/20191025/CG000113/CA000378/20191025154016/be725996eb8e4f8abd237b1452360298.m3u8";
+//        mVideoPath = "http://qiniunstadium.reee.cn/m3u8/20191025/CG000113/CA000378/20191025154016/be725996eb8e4f8abd237b1452360298.m3u8";
+        mVideoPath = "http://qiniunstadium.reee.cn/m3u8/20191028/CG000111/CA000374/20191028163657/602bf0b44a454ceaadf14c48d2eef716.m3u8";
         //不能播放的 老播放器不能播放的
         mVideoPath2 = "http://qiniunstadium.reee.cn/m3u8/20191025/CG000112/CA000376/20191025154016/d730481c1a0a439d904e6e09f0a3085b.m3u8";
     }

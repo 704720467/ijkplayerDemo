@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!--播放器-->
+
     <cn.reee.reeeplayer.widget.media.IjkVideoView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
+
     <!--播放器 加载信息-->
     <TableLayout
         android:id="@+id/hud_view"

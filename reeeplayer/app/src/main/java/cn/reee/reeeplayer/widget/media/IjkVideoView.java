@@ -1329,16 +1329,30 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     }
 
     protected void changeTextureViewShowType() {
-        if (mRenderView == null) return;
-        ViewGroup.LayoutParams layoutParams = mRenderView.getView().getLayoutParams();
-        layoutParams.width = (int) ((ScreenUtil.getScreenWidthSize(getContext()) - ((ScreenUtil.getInstance(getContext()).getHorizontalScale()) * 80)));
-        layoutParams.height = layoutParams.width * 9 / 16;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (mRenderView.getView() != null) {
-                mRenderView.getView().setOutlineProvider(new TextureVideoViewOutlineProvider(
-                        ScreenUtil.dp2px(getContext(), 10), layoutParams.height, layoutParams.width));
-                mRenderView.getView().setClipToOutline(true);
-            }
+//        if (mRenderView == null) return;
+//        ViewGroup.LayoutParams layoutParams = mRenderView.getView().getLayoutParams();
+//        if (layoutParams.width == 0 || layoutParams.height == 0) {
+//            layoutParams.width = (int) ((ScreenUtil.getScreenWidthSize(getContext()) - ((ScreenUtil.getInstance(getContext()).getHorizontalScale()) * 80)));
+//            layoutParams.height = layoutParams.width * 9 / 16;
+//        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            if (mRenderView.getView() != null) {
+//                mRenderView.getView().setOutlineProvider(new TextureVideoViewOutlineProvider(
+//                        ScreenUtil.dp2px(getContext(), 10), layoutParams.height, layoutParams.width));
+//                mRenderView.getView().setClipToOutline(true);
+//            }
+//        }
+    }
+
+    /**
+     * 设置 播放View 宽高
+     */
+    public void setVideoViewSize(int width, int height) {
+        if (mRenderView != null) {
+            mRenderView.setVideoSize(width, height);
+            mRenderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
         }
+        changeTextureViewShowType();
+        requestLayout();
     }
 }
