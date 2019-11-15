@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">libvideoedit</string>
+    <string name="video_not_find">视频文件未找到</string>
+    <string name="video_transcode_imperfect">视频转码残缺</string>
+    <string name="decode_frames_error">获取视频帧异常</string>
+    <string name="video_transcode_error">视频加载发生错误</string>
+
+</resources>

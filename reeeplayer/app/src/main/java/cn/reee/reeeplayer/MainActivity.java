@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -27,17 +28,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.reee.reeeplayer.application.Settings;
 import cn.reee.reeeplayer.base.BaseActivity;
 import cn.reee.reeeplayer.content.RecentMediaStorage;
 import cn.reee.reeeplayer.util.ProgressDialogUtil;
+import cn.reee.reeeplayer.view.dialog.DelayLoadingDialogManager;
 import cn.reee.reeeplayer.widget.media.AndroidMediaController;
 import cn.reee.reeeplayer.widget.media.IjkVideoView;
 import cn.reee.reeeplayer.widget.media.MeasureHelper;
 import cn.reee.reeeplayer.widget.preference.ReeeGetImp;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
+
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+import com.zp.libvideoedit.Transcoder.Transcoder;
+import com.zp.libvideoedit.utils.FileUtils;
+import com.zp.libvideoedit.utils.LogUtil;
+import com.zp.libvideoedit.utils.MediaUtils;
+import com.zp.libvideoedit.utils.ToastUtil;
+
+import static com.zp.libvideoedit.Constants.VERBOSE;
 
 
 public class MainActivity extends BaseActivity implements TracksFragment.ITrackHolder, ReeeGetImp {
@@ -152,6 +166,23 @@ public class MainActivity extends BaseActivity implements TracksFragment.ITrackH
         }
         mVideoView.start();
         initGetView();
+
+        delayLoadingDialogManager = new DelayLoadingDialogManager(this);
+        delayLoadingDialogManager.setCancelable(false);
+        MediaUtils.getInstance(this);
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                .start();
+        findViewById(R.id.bt_trancode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String videoPath = "sdcard/test.ts";
+                String videoPathMp4 = "sdcard/test.mp4";
+                transCode(videoPath, videoPathMp4, 1);
+            }
+        });
+
     }
 
     @Override
@@ -299,5 +330,82 @@ public class MainActivity extends BaseActivity implements TracksFragment.ITrackH
     public void getFiled() {
         Message m = handler.obtainMessage(1, 0, 0);
         handler.sendMessage(m);
+    }
+
+    String tempStr = "_temp_";
+    public DelayLoadingDialogManager delayLoadingDialogManager;
+
+    /**
+     * 视频转码
+     */
+    private void transCode(String videoPath, String outPutFilePath, final int index) {
+
+        final Transcoder transCoder = new Transcoder(this);
+        transCoder.setForceAllKeyFrame(true);
+        transCoder.setInPutFilePath(videoPath);
+
+        //临时文件名
+        String newOutPutFilePath = outPutFilePath.replace(".mp4", tempStr + ".mp4");
+        transCoder.setOutPutFilePath(newOutPutFilePath);
+
+//        final String thumbPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/cts/thumb";
+//        File dir = new File(thumbPath);
+//        if (dir.exists()) {
+//            dir.delete();
+//        }
+//        dir.mkdirs();
+
+        transCoder.setCallback(new Transcoder.Callback() {
+            @Override
+            public void onThumbGenerated(Transcoder transCoder, Bitmap thumb, int index, long pts) {
+                Log.i(TAG, "onThumbGenerated:" + index + "\t" + pts + "\t" + thumb.getWidth() + "x" + thumb.getHeight());
+//                String filename = thumbPath + "/" + index + ".png";
+//                BufferedOutputStream bos = null;
+//                try {
+//                    bos = new BufferedOutputStream(new FileOutputStream(filename));
+//                    thumb.compress(Bitmap.CompressFormat.PNG, 90, bos);
+//                    thumb.recycle();
+//                    bos.close();
+//                } catch (Exception e2) {
+//                    e2.printStackTrace();
+//                }
+
+            }
+
+            @Override
+            public void onProgress(Transcoder transCoder, float percent) {
+                if (VERBOSE) Log.i(TAG, "percent:" + percent);
+//                if (index == maxIndex) {
+//                    dialogProgressView.setProgress(percent);
+//                }
+            }
+
+            @Override
+            public void OnSuccessed(Transcoder transCoder, final String outPutFilePath) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String filename = outPutFilePath.substring(outPutFilePath.lastIndexOf("/") + 1);
+                        FileUtils.reName(outPutFilePath, filename.replace(tempStr, ""));
+//                        transCodeSuccessed();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(Transcoder transCoder, final String errmsg) {
+                Log.i(TAG, "onError:" + errmsg);
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        delayLoadingDialogManager.hideLoading();
+                        ToastUtil.showToast(MainActivity.this, errmsg);
+                    }
+                });
+            }
+        });
+        delayLoadingDialogManager.showLoading();
+        transCoder.transCode();
     }
 }

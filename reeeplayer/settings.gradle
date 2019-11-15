@@ -1,2 +1,2 @@
-include ':app', ':videoedit'
+include ':app', ':libvideoedit',':permission'
 include ':ijkplayer-java'

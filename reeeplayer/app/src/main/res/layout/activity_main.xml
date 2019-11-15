@@ -61,6 +61,16 @@
             android:layout_marginLeft="150dp"
             android:layout_marginBottom="100dp"
             android:text="跳转下一界面" />
+
+        <Button
+            android:id="@+id/bt_trancode"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="260dp"
+            android:layout_marginBottom="100dp"
+            android:text="转码" />
+
     </FrameLayout>
 
     <!-- The navigation drawer -->

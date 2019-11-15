@@ -43,6 +43,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation project(':ijkplayer-java')
-    implementation project(':videoedit')
+    implementation project(':libvideoedit')
+    implementation project(':permission')
 //    compile project(':ijkplayer-armv7a')
 }
