@@ -167,21 +167,6 @@ public class MainActivity extends BaseActivity implements TracksFragment.ITrackH
         mVideoView.start();
         initGetView();
 
-        delayLoadingDialogManager = new DelayLoadingDialogManager(this);
-        delayLoadingDialogManager.setCancelable(false);
-        MediaUtils.getInstance(this);
-        AndPermission.with(this)
-                .runtime()
-                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
-                .start();
-        findViewById(R.id.bt_trancode).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String videoPath = "sdcard/test.ts";
-                String videoPathMp4 = "sdcard/test.mp4";
-                transCode(videoPath, videoPathMp4, 1);
-            }
-        });
 
     }
 
@@ -332,80 +317,5 @@ public class MainActivity extends BaseActivity implements TracksFragment.ITrackH
         handler.sendMessage(m);
     }
 
-    String tempStr = "_temp_";
-    public DelayLoadingDialogManager delayLoadingDialogManager;
 
-    /**
-     * 视频转码
-     */
-    private void transCode(String videoPath, String outPutFilePath, final int index) {
-
-        final Transcoder transCoder = new Transcoder(this);
-        transCoder.setForceAllKeyFrame(true);
-        transCoder.setInPutFilePath(videoPath);
-
-        //临时文件名
-        String newOutPutFilePath = outPutFilePath.replace(".mp4", tempStr + ".mp4");
-        transCoder.setOutPutFilePath(newOutPutFilePath);
-
-//        final String thumbPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/cts/thumb";
-//        File dir = new File(thumbPath);
-//        if (dir.exists()) {
-//            dir.delete();
-//        }
-//        dir.mkdirs();
-
-        transCoder.setCallback(new Transcoder.Callback() {
-            @Override
-            public void onThumbGenerated(Transcoder transCoder, Bitmap thumb, int index, long pts) {
-                Log.i(TAG, "onThumbGenerated:" + index + "\t" + pts + "\t" + thumb.getWidth() + "x" + thumb.getHeight());
-//                String filename = thumbPath + "/" + index + ".png";
-//                BufferedOutputStream bos = null;
-//                try {
-//                    bos = new BufferedOutputStream(new FileOutputStream(filename));
-//                    thumb.compress(Bitmap.CompressFormat.PNG, 90, bos);
-//                    thumb.recycle();
-//                    bos.close();
-//                } catch (Exception e2) {
-//                    e2.printStackTrace();
-//                }
-
-            }
-
-            @Override
-            public void onProgress(Transcoder transCoder, float percent) {
-                if (VERBOSE) Log.i(TAG, "percent:" + percent);
-//                if (index == maxIndex) {
-//                    dialogProgressView.setProgress(percent);
-//                }
-            }
-
-            @Override
-            public void OnSuccessed(Transcoder transCoder, final String outPutFilePath) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String filename = outPutFilePath.substring(outPutFilePath.lastIndexOf("/") + 1);
-                        FileUtils.reName(outPutFilePath, filename.replace(tempStr, ""));
-//                        transCodeSuccessed();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(Transcoder transCoder, final String errmsg) {
-                Log.i(TAG, "onError:" + errmsg);
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        delayLoadingDialogManager.hideLoading();
-                        ToastUtil.showToast(MainActivity.this, errmsg);
-                    }
-                });
-            }
-        });
-        delayLoadingDialogManager.showLoading();
-        transCoder.transCode();
-    }
 }
