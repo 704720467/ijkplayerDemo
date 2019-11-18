@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
+import com.zp.libvideoedit.Transcoder.TranscodeManager;
 import com.zp.libvideoedit.Transcoder.Transcoder;
 import com.zp.libvideoedit.utils.FileUtils;
 import com.zp.libvideoedit.utils.MediaUtils;
@@ -48,9 +49,9 @@ public class TranscoderTsActivity extends AppCompatActivity {
                     public void run() {
                         delayLoadingDialogManager.showLoading();
                         //                String videoPath = "sdcard/test.ts";
-                        String videoPath = "sdcard/长春.ts";
+                        String videoPath = "sdcard/TestTs/长春.ts";
                         //                        String videoPath = "sdcard/test1.mp4";
-                        String outPutFilePath = "sdcard/test.mp4";
+                        String outPutFilePath = "sdcard/TestTs/test.mp4";
                         transCode(videoPath, outPutFilePath, 1);
                     }
                 });
@@ -64,7 +65,7 @@ public class TranscoderTsActivity extends AppCompatActivity {
      */
     private void transCode(String videoPath, String outPutFilePath, final int index) {
 
-        final Transcoder transCoder = new Transcoder(this);
+        final TranscodeManager transCoder = new TranscodeManager(this);
         transCoder.setForceAllKeyFrame(true);
         transCoder.setInPutFilePath(videoPath);
         //临时文件名
@@ -72,9 +73,9 @@ public class TranscoderTsActivity extends AppCompatActivity {
         transCoder.setOutPutFilePath(newOutPutFilePath);
 
 
-        transCoder.setCallback(new Transcoder.Callback() {
+        transCoder.setCallback(new TranscodeManager.Callback() {
             @Override
-            public void onThumbGenerated(Transcoder transCoder, Bitmap thumb, int index, long pts) {
+            public void onThumbGenerated(TranscodeManager transCoder, Bitmap thumb, int index, long pts) {
                 Log.i(TAG, "onThumbGenerated:" + index + "\t" + pts + "\t" + thumb.getWidth() + "x" + thumb.getHeight());
 //                String filename = thumbPath + "/" + index + ".png";
 //                BufferedOutputStream bos = null;
@@ -90,7 +91,7 @@ public class TranscoderTsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onProgress(Transcoder transCoder, float percent) {
+            public void onProgress(TranscodeManager transCoder, float percent) {
                 if (VERBOSE) Log.i(TAG, "percent:" + percent);
 //                if (index == maxIndex) {
 //                    dialogProgressView.setProgress(percent);
@@ -98,7 +99,7 @@ public class TranscoderTsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void OnSuccessed(Transcoder transCoder, final String outPutFilePath) {
+            public void OnSuccessed(TranscodeManager transCoder, final String outPutFilePath) {
                 TranscoderTsActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -111,7 +112,7 @@ public class TranscoderTsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(Transcoder transCoder, final String errmsg) {
+            public void onError(TranscodeManager transCoder, final String errmsg) {
                 Log.i(TAG, "onError:" + errmsg);
                 TranscoderTsActivity.this.runOnUiThread(new Runnable() {
                     @Override
