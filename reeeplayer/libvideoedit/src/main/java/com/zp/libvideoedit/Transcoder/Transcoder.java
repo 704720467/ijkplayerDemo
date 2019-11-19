@@ -367,10 +367,10 @@ public class Transcoder {
                 audioFile.setTimebase(-1);
 
             }
-            if (callback != null) callback.OnSuccessed(self, outPutFilePath);
+            if (callback != null) callback.OnSuccessed(outPutFilePath);
         } catch (Exception e) {
             Log.e(TAG_TR, Thread.currentThread().getName() + "|_", e);
-            if (callback != null) callback.onError(self, "视频加载发生错误");
+            if (callback != null) callback.onError("视频加载发生错误");
         } finally {
             long elapseTime = System.currentTimeMillis() - startTime;
             if (VERBOSE_TR)
@@ -437,15 +437,15 @@ public class Transcoder {
             }
             if (callback != null) {
                 if (lastProgress > 98) {
-                    callback.OnSuccessed(self, outPutFilePath);
+                    callback.OnSuccessed(outPutFilePath);
                 } else {//转码不完整
-                    callback.onError(self, context.getString(R.string.video_transcode_imperfect));
+                    callback.onError(context.getString(R.string.video_transcode_imperfect));
                 }
             }
         } catch (Exception e) {
             Log.e(TAG_TR, Thread.currentThread().getName() + "|_", e);
             if (callback != null)
-                callback.onError(self, context.getString(R.string.video_transcode_error));
+                callback.onError(context.getString(R.string.video_transcode_error));
         } finally {
             long elapseTime = System.currentTimeMillis() - startTime;
             if (VERBOSE_TR)
@@ -771,7 +771,7 @@ public class Transcoder {
                             Log.d(TAG_TR, Thread.currentThread().getName() + "|_output surface: copy bitmap\t" + thumbnIndex + "\t" + info.presentationTimeUs);
                         Bitmap thumbBmp = outputSurface.copyBitmap();
                         if (callback != null)
-                            callback.onThumbGenerated(self, thumbBmp, thumbnIndex, info.presentationTimeUs);
+                            callback.onThumbGenerated(thumbBmp, thumbnIndex, info.presentationTimeUs);
                         thumbnIndex++;
 
                     }
@@ -1101,7 +1101,7 @@ public class Transcoder {
             percent = 100;
         }
         if (percent > lastProgress) {
-            if (callback != null) callback.onProgress(this, (float) percent / 100.0f);
+            if (callback != null) callback.onProgress((float) percent / 100.0f);
             if (VERBOSE_TR)
                 Log.d(TAG_TR, Thread.currentThread().getName() + "trancode_percent:" + percent);
             lastProgress = percent;
@@ -1254,35 +1254,30 @@ public class Transcoder {
         /**
          * 生成缩略图回调
          *
-         * @param transCoder
-         * @param thumb      Bitmap 需要listener手动recycle
+         * @param thumb Bitmap 需要listener手动recycle
          * @param index
          * @param pts
          */
-        public void onThumbGenerated(Transcoder transCoder, Bitmap thumb, int index, long pts);
+        public void onThumbGenerated(Bitmap thumb, int index, long pts);
 
         /**
          * 转码进度回调
          *
-         * @param transCoder
-         * @param percent    导出完成百分比
+         * @param percent 导出完成百分比
          */
-        public void onProgress(Transcoder transCoder, float percent);
+        public void onProgress(float percent);
 
         /**
          * 转码完成功成回调
-         *
-         * @param transCoder
          */
-        public void OnSuccessed(Transcoder transCoder, String outPutFilePath);
+        public void OnSuccessed(String outPutFilePath);
 
         /**
          * 转码失败回调
          *
-         * @param transCoder
          * @param errmsg
          */
-        public void onError(Transcoder transCoder, String errmsg);
+        public void onError(String errmsg);
 
     }
 
