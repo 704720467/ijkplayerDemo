@@ -12,11 +12,14 @@ import android.view.Surface;
 
 import com.zp.libvideoedit.R;
 import com.zp.libvideoedit.utils.CodecUtils;
+import com.zp.libvideoedit.utils.LogUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -93,6 +96,8 @@ public class TranscodeManager implements TranscodeListener {
     private long durationUs;
     private Object lockObject = new Object();
 
+    private TranscodeModle transcodeModle;
+
     public TranscodeManager(Context context, String inputFile, String outFile) {
         pendingAudioEncoderInputBufferIndices = new LinkedList<Integer>();
         pendingVideoEncoderOutputBufferIndices = new LinkedList<Integer>();
@@ -105,9 +110,50 @@ public class TranscodeManager implements TranscodeListener {
         this.context = context;
         this.inputFile = inputFile;
         this.outFile = outFile;
-        transcoderNew = new TranscoderNew(context, inputFile, outFile, pendingAudioDecoderOutputBufferIndices,
-                pendingAudioDecoderOutputBufferInfos);
+        transcoderNew = new TranscoderNew(context, inputFile, pendingAudioDecoderOutputBufferIndices, pendingAudioDecoderOutputBufferInfos);
         transcoderNew.setCallback(this);
+
+        //验证 文件输出位置
+        if (outFile == null || outFile.length() == 0)
+            throw new TranscodeRunTimeException("输出文件为空");
+        File outputFile = new File(outFile);
+        String suffix = outFile.substring(outFile.lastIndexOf(".") + 1);
+        if (!suffix.equalsIgnoreCase("mp4")) {
+            throw new TranscodeRunTimeException("输出文件扩展名仅能为mp4");
+        }
+        if (outputFile.exists())
+            Log.w(TAG_TR, Thread.currentThread().getName() + "|_file will be overwite");
+        File parent = outputFile.getParentFile();
+        if (!parent.exists()) parent.mkdirs();
+    }
+
+    public TranscodeManager(Context context, ArrayList<String> inputFiles, String outFile) {
+        pendingAudioEncoderInputBufferIndices = new LinkedList<Integer>();
+        pendingVideoEncoderOutputBufferIndices = new LinkedList<Integer>();
+        pendingVideoEncoderOutputBufferInfos = new LinkedList<MediaCodec.BufferInfo>();
+        pendingAudioEncoderOutputBufferIndices = new LinkedList<Integer>();
+        pendingAudioEncoderOutputBufferInfos = new LinkedList<MediaCodec.BufferInfo>();
+        pendingAudioDecoderOutputBufferIndices = new LinkedList<Integer>();
+        pendingAudioDecoderOutputBufferInfos = new LinkedList<MediaCodec.BufferInfo>();
+
+        this.context = context;
+        this.inputFile = inputFiles.get(0);
+        this.outFile = outFile;
+        transcodeModle = new TranscodeModle(context, inputFiles,
+                pendingAudioDecoderOutputBufferInfos, pendingAudioDecoderOutputBufferIndices, this);
+
+        //验证 文件输出位置
+        if (outFile == null || outFile.length() == 0)
+            throw new TranscodeRunTimeException("输出文件为空");
+        File outputFile = new File(outFile);
+        String suffix = outFile.substring(outFile.lastIndexOf(".") + 1);
+        if (!suffix.equalsIgnoreCase("mp4")) {
+            throw new TranscodeRunTimeException("输出文件扩展名仅能为mp4");
+        }
+        if (outputFile.exists())
+            Log.w(TAG_TR, Thread.currentThread().getName() + "|_file will be overwite");
+        File parent = outputFile.getParentFile();
+        if (!parent.exists()) parent.mkdirs();
     }
 
     public void setCallback(TranscodeManagerCallback callback) {
@@ -127,7 +173,28 @@ public class TranscodeManager implements TranscodeListener {
         release();
     }
 
-    private void initEncode(int height, int width, int bitRate, int fps) throws Exception {
+    public void transCodes() {
+        try {
+            long startTime = System.currentTimeMillis();
+            initEncode();
+            transcodeModle.startTransCode();
+            awaitEncode();
+            if (transcodeManagerCallback != null) {
+                if (lastProgress > 98) {
+                    transcodeManagerCallback.OnSuccessed(outFile);
+                } else {//转码不完整
+                    transcodeManagerCallback.onError(context.getString(R.string.video_transcode_imperfect));
+                }
+            }
+            LogUtil.e(TAG, "===================>转码完毕耗时：" + (System.currentTimeMillis() - startTime));
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        } finally {
+            release();
+        }
+    }
+
+    private void initEncode() throws Exception {
         outputVideoTrack = -1;
         outputAudioTrack = -1;
         encoderOutputVideoFormat = null;
@@ -136,6 +203,11 @@ public class TranscodeManager implements TranscodeListener {
         audioEncodedFrameCount = 0;
         videoEncoderDone = false;
         lastTimestampUsForAudio = 0;
+        int height = transcodeModle.getmVideoHeight();
+        int width = transcodeModle.getmVideoWidth();
+        int bitRate = transcodeModle.getBitRate();
+        int fps = transcodeModle.getFps();
+        durationUs = transcodeModle.getDurationUs();
 
         muxer = createMuxer();
         MediaCodecInfo videoCodecInfo = CodecUtils.selectCodec(OUTPUT_VIDEO_MIME_TYPE);
@@ -171,7 +243,7 @@ public class TranscodeManager implements TranscodeListener {
             AtomicReference<Surface> inputSurfaceReference = new AtomicReference<Surface>();
             videoEncoder = createVideoEncoder(videoCodecInfo, outputVideoFormat, inputSurfaceReference);
             inputSurface = new TranscodeInputSurface(inputSurfaceReference.get());
-            inputSurface.makeCurrent();
+//            inputSurface.makeCurrent();
 //            inputSurface.releaseEGLContext();
         }
         if (mCopyAudio) {
@@ -384,6 +456,17 @@ public class TranscodeManager implements TranscodeListener {
         if (VERBOSE_TR) {
             Log.d(TAG_TR, Thread.currentThread().getName() + "|_audio encoder: returned buffer for time " + info.presentationTimeUs);
         }
+        if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0 && transcodeModle.haseNext()) {
+            synchronized (this) {
+                audioEncoderDone = true;
+                notifyAll();
+                Log.d(TAG_TR, Thread.currentThread().getName() + "======>还有TS不能写入结束语句 muxAudio notifyAll");
+            }
+            audioEncoder.releaseOutputBuffer(index, false);
+            audioEncodedFrameCount++;
+            return;
+        }
+
         if (info.size != 0) {
             try {
                 if (lastTimestampUsForAudio > info.presentationTimeUs)
@@ -478,11 +561,18 @@ public class TranscodeManager implements TranscodeListener {
         synchronized (this) {
             while ((mCopyVideo && !videoEncoderDone) || (mCopyAudio && !audioEncoderDone)) {
                 try {
-                    Log.d(TAG_TR, Thread.currentThread().getName() + "======>去等待！mCopyVideo=" + mCopyVideo + "\tvideoEncoderDone="
-                            + videoEncoderDone + "\tmCopyAudio=" + mCopyAudio + "\taudioEncoderDone=" + audioEncoderDone);
+                    Log.d(TAG_TR, Thread.currentThread().getName() + "======>去等待！mCopyVideo=" + mCopyVideo + " \t videoEncoderDone="
+                            + videoEncoderDone + " \t mCopyAudio=" + mCopyAudio + " \t audioEncoderDone=" + audioEncoderDone);
                     wait();
-                    Log.d(TAG_TR, Thread.currentThread().getName() + "======>唤醒了！mCopyVideo=" + mCopyVideo + "\tvideoEncoderDone="
-                            + videoEncoderDone + "\tmCopyAudio=" + mCopyAudio + "\taudioEncoderDone=" + audioEncoderDone);
+                    Log.d(TAG_TR, Thread.currentThread().getName() + "======>唤醒了！mCopyVideo=" + mCopyVideo + " \t videoEncoderDone="
+                            + videoEncoderDone + " \t mCopyAudio=" + mCopyAudio + " \t audioEncoderDone=" + audioEncoderDone);
+                    if (videoEncoderDone && audioEncoderDone && transcodeModle.haseNext()) {
+                        Log.d(TAG_TR, Thread.currentThread().getName() + "解码完毕，继续下一个解码！");
+                        VERBOSE_TR = true;
+                        videoEncoderDone = false;
+                        audioEncoderDone = false;
+                        transcodeModle.doNextTs();
+                    }
                 } catch (InterruptedException ie) {
                 }
             }
@@ -494,12 +584,12 @@ public class TranscodeManager implements TranscodeListener {
     @Override
     public void validateParamsCallBack(int height, int width, int bitRate, int fps,
                                        long durationUs) {
-        try {
-            this.durationUs = durationUs;
-            initEncode(height, width, bitRate, fps);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.durationUs = durationUs;
+//            initEncode(height, width, bitRate, fps);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -541,7 +631,7 @@ public class TranscodeManager implements TranscodeListener {
             Log.d(TAG_TR, Thread.currentThread().getName() + "|_audio decoder: pending buffer of size " + size + "\tpts:" + presentationTime);
         }
         if (size >= 0) {
-            ByteBuffer decoderOutputBuffer = transcoderNew.getAudioDecoder().getOutputBuffer(decoderIndex).duplicate();
+            ByteBuffer decoderOutputBuffer = transcodeModle.getAudioDecoder().getOutputBuffer(decoderIndex).duplicate();
             decoderOutputBuffer.position(info.offset);
             decoderOutputBuffer.limit(info.offset + size);
             encoderInputBuffer.position(0);
@@ -550,7 +640,7 @@ public class TranscodeManager implements TranscodeListener {
                 Log.d(TAG_TR, Thread.currentThread().getName() + "|_decoderOutputBuffer:" + decoderOutputBuffer);
             if (VERBOSE_TR)
                 Log.i(TAG_TR, Thread.currentThread().getName() + "|_encoderInputBuffer:" + encoderInputBuffer);
-            int srcChannelCount = transcoderNew.getDecoderOutputAudioFormat().getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+            int srcChannelCount = transcodeModle.getDecoderOutputAudioFormat().getInteger(MediaFormat.KEY_CHANNEL_COUNT);
             int destChannelCount = encoderInputAudioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
 
             if (srcChannelCount > 3 && destChannelCount == 2) {
@@ -571,7 +661,7 @@ public class TranscodeManager implements TranscodeListener {
             }
             audioEncoder.queueInputBuffer(encoderIndex, 0, size, presentationTime, info.flags);
         }
-        transcoderNew.getAudioDecoder().releaseOutputBuffer(decoderIndex, false);
+        transcodeModle.getAudioDecoder().releaseOutputBuffer(decoderIndex, false);
     }
 
     @Override
@@ -592,8 +682,8 @@ public class TranscodeManager implements TranscodeListener {
     }
 
     @Override
-    public void makeEGLContext() {
-        if (forceAllKeyFrame) {
+    public void makeEGLContext(boolean doSetEncoder) {
+        if (forceAllKeyFrame && doSetEncoder) {
             Bundle bundle = new Bundle();
             bundle.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
             videoEncoder.setParameters(bundle);
@@ -603,8 +693,16 @@ public class TranscodeManager implements TranscodeListener {
 
     @Override
     public void onVideoDecoderDone() {
-        if (videoEncoder != null)
+        Log.d(TAG_TR, "====>解码结束回调:transcodeModle.haseNext()=" + transcodeModle.haseNext());
+        if (videoEncoder != null && !transcodeModle.haseNext())
             videoEncoder.signalEndOfInputStream();
+        if (transcodeModle.haseNext()) {
+            synchronized (this) {
+                videoEncoderDone = true;
+                notifyAll();
+                Log.d(TAG_TR, Thread.currentThread().getName() + "======> muxVideo notifyAll");
+            }
+        }
     }
 
     @Override

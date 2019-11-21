@@ -38,7 +38,6 @@ public class TranscoderNew {
 
     Context context;
     private String inPutFilePath;
-    private String outPutFilePath;
 
     /**
      * 如果不制定，将使用原视频的宽高
@@ -117,36 +116,23 @@ public class TranscoderNew {
         this.context = context;
     }
 
-    public TranscoderNew(Context context, String inPutFilePath, String outPutFilePath,
+    public TranscoderNew(Context context, String inPutFilePath,
                          LinkedList<Integer> pendingAudioDecoderOutputBufferIndices,
                          LinkedList<MediaCodec.BufferInfo> pendingAudioDecoderOutputBufferInfos) {
         this.context = context;
         this.inPutFilePath = inPutFilePath;
-        this.outPutFilePath = outPutFilePath;
         this.pendingAudioDecoderOutputBufferIndices = pendingAudioDecoderOutputBufferIndices;
         this.pendingAudioDecoderOutputBufferInfos = pendingAudioDecoderOutputBufferInfos;
     }
 
 
-    private void validateParams() throws TranscodeRunTimeException {
+    public void validateParams() throws TranscodeRunTimeException {
 //
         try {
             CodecUtils.checkMediaExist(context, inPutFilePath);
         } catch (Exception e) {
             throw new TranscodeRunTimeException(e.getMessage());
         }
-
-        if (outPutFilePath == null || outPutFilePath.length() == 0)
-            throw new TranscodeRunTimeException("输出文件为空");
-        File outputFile = new File(outPutFilePath);
-        String suffix = outPutFilePath.substring(outPutFilePath.lastIndexOf(".") + 1);
-        if (!suffix.equalsIgnoreCase("mp4")) {
-            throw new TranscodeRunTimeException("输出文件扩展名仅能为mp4");
-        }
-        if (outputFile.exists())
-            Log.w(TAG_TR, Thread.currentThread().getName() + "|_file will be overwite");
-        File parent = outputFile.getParentFile();
-        if (!parent.exists()) parent.mkdirs();
 
         if (mCopyVideo) {
             try {
@@ -239,7 +225,7 @@ public class TranscoderNew {
             if (VERBOSE_TR)
                 Log.i(TAG_TR, caller() + "|_FORMAT:decoderInputVideoFormat:" + decoderInputVideoFormat);
             if (VERBOSE_TR) {
-                Log.d(TAG_TR, String.format("transoder file %s to %s", inPutFilePath, outPutFilePath));
+                Log.d(TAG_TR, String.format("transoder file %s", inPutFilePath));
             }
         }
         if (mCopyAudio) {
@@ -264,9 +250,9 @@ public class TranscoderNew {
     public void transCode() {
         if (doing)
             throw new TranscodeRunTimeException("cant' trancode while transcoder is doing now...");
-        if (VERBOSE_TR)
-            Log.i(TAG_TR, caller() + "transCode...." + inPutFilePath + ", ToutPath:" + outPutFilePath);
-        validateParams();
+//        if (VERBOSE_TR)
+        Log.i(TAG_TR, caller() + "transCode...." + inPutFilePath);
+//        validateParams();
         long startTime = System.currentTimeMillis();
         try {
             doTranscode();
@@ -295,6 +281,8 @@ public class TranscoderNew {
             audioExtractedFrameCount = 0;
             audioDecodedFrameCount = 0;
             if (mCopyVideo) {
+                if (callback != null)
+                    callback.makeEGLContext(false);
                 outputSurface = new TranscodeOutputSurface(width, height);
                 videoDecoder = createVideoDecoder(decoderInputVideoFormat, outputSurface.getSurface());
                 if (callback != null)
@@ -373,7 +361,7 @@ public class TranscoderNew {
                 codec.releaseOutputBuffer(index, render);
                 if (render) {
                     if (callback != null)
-                        callback.makeEGLContext();
+                        callback.makeEGLContext(true);
                     if (VERBOSE_TR)
                         Log.d(TAG_TR, caller() + "|DEAD_LOCK_output surface: await new image");
                     outputSurface.awaitNewImage();
@@ -608,5 +596,25 @@ public class TranscoderNew {
 
     public MediaCodec getAudioDecoder() {
         return audioDecoder;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getBitRate() {
+        return bitRate;
+    }
+
+    public int getFps() {
+        return fps;
+    }
+
+    public long getDurationUs() {
+        return durationUs;
     }
 }

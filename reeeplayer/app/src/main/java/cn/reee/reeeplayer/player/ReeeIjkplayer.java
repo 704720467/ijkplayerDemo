@@ -394,4 +394,14 @@ public class ReeeIjkplayer extends FrameLayout implements OnClickListener
         mVideoView.release(true);
         mVideoView.stopBackgroundPlay();
     }
+
+    public void seekTo(long seekTimeMs) {
+        if (mVideoView == null) return;
+        mVideoView.seekTo((int) seekTimeMs);
+    }
+
+    public int getCurrentPosition() {
+        return mVideoView.getCurrentPosition();
+    }
+
 }

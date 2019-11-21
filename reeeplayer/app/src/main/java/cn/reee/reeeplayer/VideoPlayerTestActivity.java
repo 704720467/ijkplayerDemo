@@ -21,6 +21,29 @@ public class VideoPlayerTestActivity extends BaseActivity {
         initData();
         initView();
         initVideo();
+        initButton();
+    }
+
+    private void initButton() {
+        findViewById(R.id.bt_change_angle1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                changeAngle("http://qiniunmatch.reee.cn/m3u8/match/20191117/CA000200/20191117130155/20191117130857/d731d3dfd3fb4f1ba2ab72652adf4c2a.m3u8");
+                changeAngle("http://192.168.1.155:8888/ac0361f872af437585b9d406332a5320.m3u8");
+            }
+        });
+        findViewById(R.id.bt_change_angle2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeAngle("http://qiniunmatch.reee.cn/m3u8/match/20191117/CA000202/20191117130155/20191117130857/085aac630b9c4622abdff577f0c760a6.m3u8");
+            }
+        });
+        findViewById(R.id.bt_change_angle3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeAngle("http://qiniunmatch.reee.cn/m3u8/match/20191117/CA000203/20191117130155/20191117130857/ad15460decd5472bbfddc5821e64eef8.m3u8");
+            }
+        });
     }
 
     private void initData() {
@@ -29,6 +52,7 @@ public class VideoPlayerTestActivity extends BaseActivity {
 //        mVideoPath = "http://qiniunstadium.reee.cn/m3u8/20191028/CG000111/CA000374/20191028163657/602bf0b44a454ceaadf14c48d2eef716.m3u8";
 //        mVideoPath = "http://192.168.1.155:8888/1e7b452d3db6499c949a11600b5b2a9f.m3u8";
         mVideoPath = "http://192.168.1.155:8888/ac0361f872af437585b9d406332a5320.m3u8";
+        mVideoPath = "http://qiniunmatch.reee.cn/m3u8/match/20191117/CA000200/20191117130155/20191117130857/d731d3dfd3fb4f1ba2ab72652adf4c2a.m3u8";
         //不能播放的 老播放器不能播放的
         mVideoPath2 = "http://qiniunstadium.reee.cn/m3u8/20191025/CG000112/CA000376/20191025154016/d730481c1a0a439d904e6e09f0a3085b.m3u8";
     }
@@ -40,6 +64,7 @@ public class VideoPlayerTestActivity extends BaseActivity {
             public void onClick(View view) {
                 if (mVideoView != null)
                     mVideoView.start();
+                mVideoView.seekTo(10000);
             }
         });
     }
@@ -48,6 +73,14 @@ public class VideoPlayerTestActivity extends BaseActivity {
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
         mVideoView.setVideoPath(mVideoPath);
+    }
+
+
+    private void changeAngle(String path) {
+        mVideoView.pause();
+        mVideoView.setVideoPath(path);
+        mVideoView.start();
+        mVideoView.seekTo(1000);
     }
 
     @Override

@@ -19,5 +19,10 @@ public interface TranscodeListener extends TranscodeManagerCallback {
 
     public void releaseEGLContext();
 
-    public void makeEGLContext();
+    /**
+     * 设置GL当前上下文
+     *
+     * @param doSetEncoder
+     */
+    public void makeEGLContext(boolean doSetEncoder);
 }

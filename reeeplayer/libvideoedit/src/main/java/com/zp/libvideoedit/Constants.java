@@ -23,7 +23,7 @@ public class Constants {
     //frameExctrator
     public static final boolean VERBOSE_FE = VERBOSE && false;
     //transcoder
-    public static final boolean VERBOSE_TR = VERBOSE && false;
+    public static boolean VERBOSE_TR = VERBOSE && false;
 
     public static final boolean VERBOSE_GL = VERBOSE && false;
     public static final boolean VERBOSE_UI = VERBOSE && false;

@@ -32,4 +32,25 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="PLAY" />
+
+    <Button
+        android:id="@+id/bt_change_angle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bg_play"
+        android:text="切换角度1" />
+
+    <Button
+        android:id="@+id/bt_change_angle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bt_change_angle1"
+        android:text="切换角度1" />
+
+    <Button
+        android:id="@+id/bt_change_angle3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bt_change_angle2"
+        android:text="切换角度1" />
 </RelativeLayout>
