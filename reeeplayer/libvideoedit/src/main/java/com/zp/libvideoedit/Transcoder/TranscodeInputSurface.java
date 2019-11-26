@@ -10,6 +10,8 @@ import android.opengl.EGLSurface;
 import android.util.Log;
 import android.view.Surface;
 
+import static com.zp.libvideoedit.Constants.GL_DEBUG;
+
 
 /**
  *
@@ -159,6 +161,7 @@ class TranscodeInputSurface {
      * Checks for EGL errors.
      */
     private void checkEglError(String msg) {
+        if(!GL_DEBUG) return;
         boolean failed = false;
         int error;
         while ((error = EGL14.eglGetError()) != EGL14.EGL_SUCCESS) {

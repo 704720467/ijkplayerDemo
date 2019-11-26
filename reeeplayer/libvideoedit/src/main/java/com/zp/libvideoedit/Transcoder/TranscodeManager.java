@@ -474,7 +474,7 @@ public class TranscodeManager implements TranscodeListener {
                 muxer.writeSampleData(outputAudioTrack, encoderOutputBuffer, info);
                 lastTimestampUsForAudio = info.presentationTimeUs;
             } catch (Exception e) {
-                Log.e(TAG, "Transcoder muxAudio error:" + e.getMessage());
+                Log.e(TAG, "TSTranscoder muxAudio error:" + e.getMessage());
             }
         }
         audioEncoder.releaseOutputBuffer(index, false);
@@ -609,7 +609,7 @@ public class TranscodeManager implements TranscodeListener {
         } catch (Exception e) {
             audioEncoder.release();
             if (e != null && e.getMessage() != null)
-                Log.e("Transcoder", "tryEncodeAudio:" + e.getMessage());
+                Log.e("TSTranscoder", "tryEncodeAudio:" + e.getMessage());
             MediaCodecInfo audioCodecInfo = CodecUtils.selectCodec(OUTPUT_AUDIO_MIME_TYPE);
             if (audioCodecInfo == null) {
                 // Don't fail CTS if they don't have an AAC codec (not here, anyway).

@@ -17,7 +17,6 @@ import com.zp.libvideoedit.Constants;
 import com.zp.libvideoedit.R;
 import com.zp.libvideoedit.utils.CodecUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -161,14 +160,6 @@ public class TranscoderNew {
             if (inputFps <= 0)
                 inputFps = Constants.DEFAULT_FPS;
 
-//            try {
-//                inputFps = decoderInputVideoFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
-//
-//            } catch (Exception e) {
-//                Log.w(TAG_TR, "transCode error by geting src video fps,use default.err:" + e.getMessage());
-//
-//            }
-
 
             if (decoderInputVideoFormat.containsKey(MediaFormat.KEY_ROTATION))
                 rotation = decoderInputVideoFormat.getInteger(MediaFormat.KEY_ROTATION);
@@ -209,7 +200,7 @@ public class TranscoderNew {
                     fps = 25;
                 }
             // 转为全关键帧视频，所有码率要大一些
-            bitRate = CodecUtils.calcBitRate(width, height, fps, 2.f);
+            bitRate = CodecUtils.calcBitRate(forceAllKeyFrame,width, height, fps);
             if (bitRate > 60 * 1024 * 1024) bitRate = 60 * 1024 * 1024;
             if (VERBOSE_TR)
                 Log.i(TAG_TR, Thread.currentThread().getName() + "|_invalid bitRate,use " + bitRate + "kbps");

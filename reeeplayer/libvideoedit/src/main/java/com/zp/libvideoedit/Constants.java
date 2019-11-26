@@ -23,14 +23,14 @@ public class Constants {
     //frameExctrator
     public static final boolean VERBOSE_FE = VERBOSE && false;
     //transcoder
-    public static boolean VERBOSE_TR = VERBOSE && false;
+    public static boolean VERBOSE_TR = VERBOSE && true;
 
     public static final boolean VERBOSE_GL = VERBOSE && false;
     public static final boolean VERBOSE_UI = VERBOSE && false;
     public static final boolean VERBOSE_M = VERBOSE && false;
     public static final boolean VERBOSE_EDIT = VERBOSE && false;
     public static final boolean VERBOSE_SEEK = VERBOSE && false;
-
+    public static final boolean GL_DEBUG=false;
     /**
      * script
      */
@@ -62,6 +62,8 @@ public class Constants {
 
     public static final String EXPORT_VIDOE_ORIGINAL_AUDIO = "_original_audio.mp3";
     public static final String TAG_EXTRA_AUDIO = "AE_ExtratAudio";
+
+
 
 
     /**

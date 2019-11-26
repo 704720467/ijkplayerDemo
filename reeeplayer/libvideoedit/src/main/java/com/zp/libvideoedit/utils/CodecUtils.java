@@ -12,6 +12,7 @@ import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.util.Log;
+import android.util.Pair;
 import android.util.Size;
 
 import com.zp.libvideoedit.Constants;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.zp.libvideoedit.Constants.ASSERT_FILE_PREFIX;
 import static com.zp.libvideoedit.Constants.DEFAULT_PBB;
@@ -268,6 +270,13 @@ public class CodecUtils {
         }
     }
 
+    public static void checkMediaExist(Context context, List<String> mediaPath) {
+        if (mediaPath == null || mediaPath.size() == 0) throw new RuntimeException("输入文件为空");
+        for (String path : mediaPath) {
+            checkMediaExist(context, path);
+        }
+    }
+
     public static String generateNextMp4FileName(String basePath) {
 //        String dbPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/cts";
         File baseDir = new File(basePath);
@@ -401,7 +410,7 @@ public class CodecUtils {
             }
 
 //            decoderOutputAudioFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, Math.max(maxInputSize, inputAudioFormat.getInteger(MediaFormat.KEY_MAX_INPUT_SIZE)));
-            decoderOutputAudioFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE,maxInputSize);
+            decoderOutputAudioFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, maxInputSize);
             if (VERBOSE)
                 Log.i(TAG, String.format("audio Formart of file %s:%s", filePath, decoderOutputAudioFormat));
             return decoderOutputAudioFormat;
@@ -494,12 +503,20 @@ public class CodecUtils {
         }
     }
 
-
     public static float detectFps(String videoPath) {
+        Pair<Float, Long> ret = detectFpsDuration(videoPath);
+        if (ret == null)
+            return -1;
+        else return ret.first;
+    }
 
+
+    public static Pair<Float, Long> detectFpsDuration(String videoPath) {
+        long beginTime = System.currentTimeMillis();
         MediaExtractor extractor = null;
         float readedCount = 0;
         float fps = 0;
+        long durationUs = -1;
         try {
             extractor = new MediaExtractor();
             MediaUtils.getInstance().setDataSource(extractor, videoPath);
@@ -512,10 +529,13 @@ public class CodecUtils {
             MediaFormat format = extractor.getTrackFormat(trackIndex);
             extractor.selectTrack(trackIndex);
 
+            if (format.containsKey(MediaFormat.KEY_DURATION))
+                durationUs = format.getLong(MediaFormat.KEY_DURATION);
+
             long firstPts = Long.MIN_VALUE;
             long lastPts = 0l;
             long frameCount = 0;
-            while (readedCount < 30) {
+            while (readedCount <= 40) {
                 long pts = extractor.getSampleTime();
                 if (firstPts == Long.MIN_VALUE) {
                     firstPts = pts;
@@ -532,14 +552,14 @@ public class CodecUtils {
                 }
             }
             float sec = (lastPts - firstPts) * 1.0f / (1.0f * US_MUTIPLE);
-            if (sec == 0) return -1;
-            fps = (float) (frameCount * 1.0 / (sec));
-            return fps;
+            if (sec == 0) return null;
+            fps = (float) ((frameCount - 1) * 1.0 / (sec));
+            return new Pair<Float, Long>(fps, durationUs);
 
         } catch (Exception e) {
             Log.e(TAG, "detectFps 准备视频发生错误 error:", e);
 //            throw new EffectException("detectFps 准备视频发生错误");
-            return -1;
+            return null;
         } finally {
             if (VERBOSE)
                 Log.i(TAG, "detectFps_result fps:" + fps + "," + ", videoPath:" + videoPath);
@@ -549,6 +569,7 @@ public class CodecUtils {
                 } catch (Exception e) {
 
                 }
+            Log.d(TAG, "detectFps elapse_time:" + (System.currentTimeMillis() - beginTime));
         }
     }
 
@@ -653,12 +674,13 @@ public class CodecUtils {
      * @param bpp    0.25-0.5
      * @return
      */
-    public static final int calcBitRate(int width, int height, int fps, float bpp) {
-        int bitrate = (int) (bpp * fps * width * height);
-        return bitrate;
+    public static final int calcBitRate(boolean forceAllKeyFrame, int width, int height, float fps) {
+        if (forceAllKeyFrame)
+            return (int) (2.0 * fps * width * height);
+        else return (int) (0.25 * fps * width * height);
     }
 
-    public static final int calcBitRate(int width, int height, int fps) {
+    public static final int calcBitRate(int width, int height, float fps) {
         int bitrate = (int) (DEFAULT_PBB * fps * width * height);
         if (bitrate < 1024) bitrate = 1024;
         return bitrate;

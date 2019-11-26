@@ -18,6 +18,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
+import static com.zp.libvideoedit.Constants.GL_DEBUG;
 import static com.zp.libvideoedit.Constants.TAG_EN;
 import static com.zp.libvideoedit.Constants.TAG_TR;
 import static com.zp.libvideoedit.Constants.VERBOSE_TR;
@@ -258,6 +259,7 @@ public class TranscodeOutputSurface implements SurfaceTexture.OnFrameAvailableLi
      * Checks for EGL errors.
      */
     private void checkEglError(String msg) {
+        if(!GL_DEBUG) return;
         boolean failed = false;
         int error;
         while ((error = mEGL.eglGetError()) != EGL10.EGL_SUCCESS) {

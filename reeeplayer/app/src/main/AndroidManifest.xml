@@ -15,26 +15,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SeekBarTestActivity"
-            android:screenOrientation="landscape">
+        <activity android:name=".PlayArrayTsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TranscoderTsActivity">
+        <activity
+            android:name=".SeekBarTestActivity"
+            android:screenOrientation="landscape">
 
         </activity>
+        <activity android:name=".TranscoderTsActivity"></activity>
         <activity
             android:name=".VideoPlayerTestActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="user"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
 
         <service
             android:name=".services.MediaPlayerService"

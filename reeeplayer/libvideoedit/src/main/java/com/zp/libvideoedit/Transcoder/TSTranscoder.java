@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
-import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.os.Bundle;
@@ -19,9 +18,6 @@ import android.view.Surface;
 
 import com.zp.libvideoedit.Constants;
 import com.zp.libvideoedit.R;
-import com.zp.libvideoedit.Time.CMTime;
-import com.zp.libvideoedit.modle.AudioFile;
-import com.zp.libvideoedit.modle.VideoFile;
 import com.zp.libvideoedit.utils.CodecUtils;
 
 import java.io.File;
@@ -30,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.zp.libvideoedit.Constants.TAG;
@@ -37,9 +34,6 @@ import static com.zp.libvideoedit.Constants.TAG_TR;
 import static com.zp.libvideoedit.Constants.US_MUTIPLE;
 import static com.zp.libvideoedit.Constants.VERBOSE_EN;
 import static com.zp.libvideoedit.Constants.VERBOSE_TR;
-import static com.zp.libvideoedit.utils.CodecUtils.createExtractor;
-import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectAudioTrackIndex;
-import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectVideoTrackIndex;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
 
 /**
@@ -57,7 +51,7 @@ import static com.zp.libvideoedit.utils.FormatUtils.caller;
  */
 
 @TargetApi(21)
-public class Transcoder {
+public class TSTranscoder {
     //业务参数
     //音视频格式参数
     private static final String OUTPUT_VIDEO_MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_AVC;
@@ -74,8 +68,11 @@ public class Transcoder {
     /**
      * 输入文件或者资源.assert:// 为前缀，会从assert中读取，否则认为是绝对路径
      */
-    private String inPutFilePath;
-
+//    private String inPutFilePath;
+    private List<String> inputFiles;
+    //剪裁,剪裁只支持单片段
+    private long trimBeginUs=-1;
+    private long trimEndUs=-1;
 
     /**
      * 如果不制定，将使用原视频的宽高
@@ -92,7 +89,7 @@ public class Transcoder {
     /**
      * 如果不指定fps,并且原视频的fps<60,将使用原视频的fpgs
      */
-    private int fps = -1;
+    private float fps = -1;
 
 //    private boolean cannotGetFps = false;
     /**
@@ -168,8 +165,10 @@ public class Transcoder {
     private int audioDecodedFrameCount = 0;
     private int audioEncodedFrameCount = 0;
     //编解码器
-    private MediaExtractor videoExtractor = null;
-    private MediaExtractor audioExtractor = null;
+//    private MediaExtractor tsVideoExtractor = null;
+    private TSMediaExtractor tsVideoExtractor =null;
+//    private MediaExtractor audioExtractor = null;
+    private TSMediaExtractor tsAudioExtractor=null;
     private TranscodeInputSurface inputSurface = null;
     private TranscodeOutputSurface outputSurface = null;
     private MediaCodec videoDecoder = null;
@@ -180,17 +179,21 @@ public class Transcoder {
     private long lastTimestampUsForAudio;//记录音频上一次的pts
 
 
-    public Transcoder(Context context) {
+    public TSTranscoder(Context context) {
         this.context = context;
     }
 
     private void validateParams() throws TranscodeRunTimeException {
 //
-        try {
-            CodecUtils.checkMediaExist(context, inPutFilePath);
-        } catch (Exception e) {
-            throw new TranscodeRunTimeException(e.getMessage());
+        if(trimBeginUs>=0 && trimEndUs>=0 && inputFiles.size()>1){
+            throw new TranscodeRunTimeException("剪裁只能应用于单片段");
         }
+        if(trimBeginUs>=0 && trimEndUs>=trimBeginUs && trimEndUs-trimBeginUs<1.8*US_MUTIPLE){
+            throw new TranscodeRunTimeException("剪裁必须大小大于2秒");
+        }
+
+       List<TSMediaExtractor.TSSegemnt> tsSegemntList=TSMediaExtractor.generateTsSegemnt(context, inputFiles);
+
 
         if (outPutFilePath == null || outPutFilePath.length() == 0)
             throw new TranscodeRunTimeException("输出文件为空");
@@ -205,39 +208,16 @@ public class Transcoder {
         if (!parent.exists()) parent.mkdirs();
 
         if (mCopyVideo) {
-            try {
-                videoExtractor = createExtractor(context, inPutFilePath);
-            } catch (IOException e) {
-                throw new TranscodeRunTimeException("invalidate video of input file.", e);
-            }
-            int videoInputTrack = getAndSelectVideoTrackIndex(videoExtractor);
-            if (videoInputTrack == -1) {
-                throw new TranscodeRunTimeException("missing video track in test video, file:" + inPutFilePath);
-            }
-            decoderInputVideoFormat = videoExtractor.getTrackFormat(videoInputTrack);
+
+                tsVideoExtractor = new TSMediaExtractor(context,tsSegemntList, TSMediaExtractor.MediaTrackType.video,trimBeginUs,trimEndUs);
+
+            decoderInputVideoFormat = tsVideoExtractor.getTrackFormat();
             if (VERBOSE_EN)
                 Log.i(TAG_TR, Thread.currentThread().getName() + "Transcode_FORMART_decoderInputVideoFormat:" + decoderInputVideoFormat);
             if (decoderInputVideoFormat.containsKey(MediaFormat.KEY_DURATION))
                 durationUs = decoderInputVideoFormat.getLong(MediaFormat.KEY_DURATION);
-            else {
-                durationUs = CodecUtils.getDurationMS(context, inPutFilePath) * 1000;
-            }
+            durationUs=tsVideoExtractor.getDurationUs();
 
-            int inputFps = 0;
-            if (decoderInputVideoFormat.containsKey(MediaFormat.KEY_FRAME_RATE))
-                inputFps = decoderInputVideoFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
-            else inputFps = Math.round(CodecUtils.detectFps(inPutFilePath));
-
-            if (inputFps <= 0)
-                inputFps = Constants.DEFAULT_FPS;
-
-//            try {
-//                inputFps = decoderInputVideoFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
-//
-//            } catch (Exception e) {
-//                Log.w(TAG_TR, "transCode error by geting src video fps,use default.err:" + e.getMessage());
-//
-//            }
 
 
             if (decoderInputVideoFormat.containsKey(MediaFormat.KEY_ROTATION))
@@ -265,13 +245,13 @@ public class Transcoder {
                 width = size.getWidth();
                 height = size.getHeight();
 
-                if (VERBOSE_EN)
+                if (VERBOSE_TR)
                     Log.i(TAG_TR, Thread.currentThread().getName() + "|Transcode_FORMART width or height.use input vedio formart:" + width + "x" + height);
             }
 
-
+            float inputFps = tsVideoExtractor.getFps();
             if (fps > 70 || fps <= 0)
-                if (inputFps <= 70 && fps > 0) {
+                if (inputFps <= 70 && inputFps > 0) {
                     fps = inputFps;
                     Log.i(TAG_TR, Thread.currentThread().getName() + "|_invalid fps,use input video fps:" + fps);
                 } else {
@@ -279,7 +259,7 @@ public class Transcoder {
                     fps = 25;
                 }
             // 转为全关键帧视频，所有码率要大一些
-            bitRate = CodecUtils.calcBitRate(width, height, fps, 2.f);
+            bitRate = CodecUtils.calcBitRate(forceAllKeyFrame,width, height, fps);
             if (bitRate > 60 * 1024 * 1024) bitRate = 60 * 1024 * 1024;
             if (VERBOSE_TR)
                 Log.i(TAG_TR, Thread.currentThread().getName() + "|_invalid bitRate,use " + bitRate + "kbps");
@@ -295,146 +275,32 @@ public class Transcoder {
             if (VERBOSE_TR)
                 Log.i(TAG_TR, caller() + "|_FORMAT:decoderInputVideoFormat:" + decoderInputVideoFormat);
             if (VERBOSE_TR) {
-                Log.d(TAG_TR, String.format("transoder file %s to %s", inPutFilePath, outPutFilePath));
+                Log.d(TAG_TR, String.format("transoder file %s to %s", inputFiles, outPutFilePath));
             }
         }
         if (mCopyAudio) {
-            try {
-                audioExtractor = createExtractor(context, inPutFilePath);
-            } catch (IOException e) {
-                throw new TranscodeRunTimeException("invalidate audio of input file.", e);
-            }
-            int audioInputTrack = CodecUtils.getAndSelectAudioTrackIndex(audioExtractor);
-            if (audioInputTrack == -1) {
-                Log.w(TAG_TR, Thread.currentThread().getName() + "|_missing audio track in  video,ignore audio");
-                mCopyAudio = false;
-            } else {
-                decoderInputAudioFormat = audioExtractor.getTrackFormat(audioInputTrack);
-            }
+            tsAudioExtractor=new TSMediaExtractor(context,tsSegemntList, TSMediaExtractor.MediaTrackType.audio,trimBeginUs,trimEndUs);
+            decoderInputAudioFormat=tsAudioExtractor.getTrackFormat();
         }
 
     }
 
-    public void transCodeSynchro() {
-        if (doing)
-            throw new TranscodeRunTimeException("cant' trancode while transcoder is doing now...");
-        if (VERBOSE_TR)
-            Log.i(TAG_TR, caller() + "transCode...." + inPutFilePath + ", ToutPath:" + outPutFilePath);
-        validateParams();
 
-
-        final Transcoder self = this;
-
-        long startTime = System.currentTimeMillis();
-        try {
-            doTranscode();
-            VideoFile videoFile = null;
-            if (mCopyVideo) {
-                videoFile = new VideoFile();
-                videoFile.setFilePath(outPutFilePath);
-                videoFile.setBitrate(bitRate);
-                CMTime durationCM = new CMTime(durationUs, US_MUTIPLE);
-
-                videoFile.setcDuration(durationCM);
-                videoFile.setDefective(false);
-                videoFile.setDuration((float) durationCM.getSecond());
-
-                videoFile.setFps((float) (videoEncodedFrameCount / durationCM.getSecond()));
-                videoFile.setFrameCounts(videoEncodedFrameCount);
-                videoFile.setHeight(height);
-                videoFile.setWidth(width);
-                videoFile.setIframesIntevalSec(keyIntervalPerSec);
-//                        rotation为原视频的方向。转码后对方向做了调整，统一位0
-                videoFile.setRotation(0);
-                videoFile.setVideoFormat(encoderOutputVideoFormat);
-            }
-            AudioFile audioFile = null;
-            if (mCopyAudio) {
-                audioFile = new AudioFile();
-                if (durationUs <= 0) {
-                    durationUs = decoderInputAudioFormat.getInteger(MediaFormat.KEY_DURATION);
-                }
-                CMTime durationCM = new CMTime(durationUs, US_MUTIPLE);
-                audioFile.setBitrate(outPutAudioBitRate);
-                audioFile.setcDuration(durationCM);
-                audioFile.setChannelCount(outPutAudioChannelCount);
-                audioFile.setDuration((float) durationCM.getSecond());
-                audioFile.setFilePath(outPutFilePath);
-                audioFile.setFormart(encoderOutputAudioFormat);
-                audioFile.setMono(outPutAudioChannelCount == 1);
-                audioFile.setSampleRate(outPutAudioSampleRate);
-                //TODO timebase
-                audioFile.setTimebase(-1);
-
-            }
-            if (callback != null) callback.OnSuccessed(outPutFilePath);
-        } catch (Exception e) {
-            Log.e(TAG_TR, Thread.currentThread().getName() + "|_", e);
-            if (callback != null) callback.onError("视频加载发生错误");
-        } finally {
-            long elapseTime = System.currentTimeMillis() - startTime;
-            if (VERBOSE_TR)
-                Log.d(TAG_TR, Thread.currentThread().getName() + "|_transcode elapse time:" + elapseTime);
-        }
-    }
 
 
     public void transCode() {
         if (doing)
             throw new TranscodeRunTimeException("cant' trancode while transcoder is doing now...");
         if (VERBOSE_TR)
-            Log.i(TAG_TR, caller() + "transCode...." + inPutFilePath + ", ToutPath:" + outPutFilePath);
+            Log.i(TAG_TR, caller() + "transCode...." + inputFiles + ", ToutPath:" + outPutFilePath);
         validateParams();
 
 
-        final Transcoder self = this;
-
-//        if (transCodeThread == null) transCodeThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-
+        final TSTranscoder self = this;
         long startTime = System.currentTimeMillis();
         try {
             doTranscode();
-            VideoFile videoFile = null;
-            if (mCopyVideo) {
-                videoFile = new VideoFile();
-                videoFile.setFilePath(outPutFilePath);
-                videoFile.setBitrate(bitRate);
-                CMTime durationCM = new CMTime(durationUs, US_MUTIPLE);
 
-                videoFile.setcDuration(durationCM);
-                videoFile.setDefective(false);
-                videoFile.setDuration((float) durationCM.getSecond());
-
-                videoFile.setFps((float) (videoEncodedFrameCount / durationCM.getSecond()));
-                videoFile.setFrameCounts(videoEncodedFrameCount);
-                videoFile.setHeight(height);
-                videoFile.setWidth(width);
-                videoFile.setIframesIntevalSec(keyIntervalPerSec);
-//                        rotation为原视频的方向。转码后对方向做了调整，统一位0
-                videoFile.setRotation(0);
-                videoFile.setVideoFormat(encoderOutputVideoFormat);
-            }
-            AudioFile audioFile = null;
-            if (mCopyAudio) {
-                audioFile = new AudioFile();
-                if (durationUs <= 0) {
-                    durationUs = decoderInputAudioFormat.getInteger(MediaFormat.KEY_DURATION);
-                }
-                CMTime durationCM = new CMTime(durationUs, US_MUTIPLE);
-                audioFile.setBitrate(outPutAudioBitRate);
-                audioFile.setcDuration(durationCM);
-                audioFile.setChannelCount(outPutAudioChannelCount);
-                audioFile.setDuration((float) durationCM.getSecond());
-                audioFile.setFilePath(outPutFilePath);
-                audioFile.setFormart(encoderOutputAudioFormat);
-                audioFile.setMono(outPutAudioChannelCount == 1);
-                audioFile.setSampleRate(outPutAudioSampleRate);
-                //TODO timebase
-                audioFile.setTimebase(-1);
-
-            }
             if (callback != null) {
                 if (lastProgress > 98) {
                     callback.OnSuccessed(outPutFilePath);
@@ -449,12 +315,9 @@ public class Transcoder {
         } finally {
             long elapseTime = System.currentTimeMillis() - startTime;
             if (VERBOSE_TR)
-                Log.d(TAG_TR, Thread.currentThread().getName() + "|_transcode elapse time:" + elapseTime);
+                Log.d(TAG_TR, Thread.currentThread().getName() + "|_transcode elapse_time:" + elapseTime);
         }
 
-//            }
-//        }, "TR_M");
-//        transCodeThread.start();
     }
 
     private void doTranscode() throws Exception {
@@ -513,7 +376,7 @@ public class Transcoder {
 
                 outputVideoFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
                 outputVideoFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitRate);
-                outputVideoFormat.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
+                outputVideoFormat.setFloat(MediaFormat.KEY_FRAME_RATE, fps);
 
                 outputVideoFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, keyIntervalPerSec);
                 if (VERBOSE_TR)
@@ -529,18 +392,13 @@ public class Transcoder {
                 videoDecoder = createVideoDecoder(decoderInputVideoFormat, outputSurface.getSurface());
                 inputSurface.releaseEGLContext();
 
-
             }
 
             if (mCopyAudio) {
 
                 int channelCount = decoderInputAudioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
                 int sampleRate = decoderInputAudioFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
-//                int bitRate = decoderInputAudioFormat.getInteger(MediaFormat.KEY_BIT_RATE);
-//                int aacProfile = decoderInputAudioFormat.getInteger(MediaFormat.KEY_AAC_PROFILE);
-
-
-                MediaFormat srcAudioFormat = CodecUtils.detectAudioFormat(context, inPutFilePath);
+                MediaFormat srcAudioFormat = CodecUtils.detectAudioFormat(context, inputFiles.get(0));
 //                 格式化音频
 
                 outPutAudioChannelCount = srcAudioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
@@ -565,6 +423,7 @@ public class Transcoder {
             }
             if (VERBOSE_TR)
                 Log.d(TAG_TR, caller() + "DEAD_LOCK_awaitEncode");
+
             awaitEncode();
 
 
@@ -573,18 +432,18 @@ public class Transcoder {
             if (VERBOSE_TR)
                 Log.d(TAG_TR, Thread.currentThread().getName() + "|_releasing extractor, decoder, encoder, and muxer");
             try {
-                if (videoExtractor != null) {
-                    videoExtractor.release();
+                if (tsVideoExtractor != null) {
+                    tsVideoExtractor.release();
                 }
             } catch (Exception e) {
-                Log.w(TAG_TR, Thread.currentThread().getName() + "|_error while releasing videoExtractor", e);
+                Log.w(TAG_TR, Thread.currentThread().getName() + "|_error while releasing tsVideoExtractor", e);
             }
             try {
-                if (audioExtractor != null) {
-                    audioExtractor.release();
+                if (tsAudioExtractor != null) {
+                    tsAudioExtractor.release();
                 }
             } catch (Exception e) {
-                Log.w(TAG_TR, Thread.currentThread().getName() + "|_error while releasing audioExtractor", e);
+                Log.w(TAG_TR, Thread.currentThread().getName() + "|_error while releasing tsAudioExtractor", e);
             }
             try {
                 if (videoDecoder != null) {
@@ -643,8 +502,8 @@ public class Transcoder {
             if (videoDecoderHandlerThread != null) {
                 videoDecoderHandlerThread.quitSafely();
             }
-            videoExtractor = null;
-            audioExtractor = null;
+            tsVideoExtractor = null;
+            tsAudioExtractor = null;
             outputSurface = null;
             inputSurface = null;
             videoDecoder = null;
@@ -701,7 +560,7 @@ public class Transcoder {
         videoDecoderHandlerThread = new HandlerThread("TR_D");
         videoDecoderHandlerThread.start();
         videoDecoderHandler = new CallbackHandler(videoDecoderHandlerThread.getLooper());
-        final Transcoder self = this;
+        final TSTranscoder self = this;
         final MediaCodec.Callback videoDecoderCallback = new MediaCodec.Callback() {
             public void onError(MediaCodec codec, MediaCodec.CodecException exception) {
             }
@@ -716,18 +575,19 @@ public class Transcoder {
             public void onInputBufferAvailable(MediaCodec codec, int index) {
                 ByteBuffer decoderInputBuffer = codec.getInputBuffer(index);
                 while (!videoExtractorDone) {
-                    int size = videoExtractor.readSampleData(decoderInputBuffer, 0);
-                    long presentationTime = videoExtractor.getSampleTime();
-                    if (VERBOSE_TR) {
-                        Log.d(TAG_TR, Thread.currentThread().getName() + "|_video extractor: returned buffer of size " + size + "\t" + presentationTime);
-                    }
+                    int size = tsVideoExtractor.readSampleData(decoderInputBuffer, 0);
+                    long presentationTime = tsVideoExtractor.getSampleTime();
+
                     if (size >= 0) {
-                        codec.queueInputBuffer(index, 0, size, presentationTime, videoExtractor.getSampleFlags());
+                        codec.queueInputBuffer(index, 0, size, presentationTime, tsVideoExtractor.getSampleFlags());
                     }
-                    videoExtractorDone = !videoExtractor.advance();
+                    if (VERBOSE_TR) {
+                        Log.d(TAG_TR, Thread.currentThread().getName() + "|_video --extractor--: returned buffer of size " + size + "\t" + presentationTime+"\t"+tsVideoExtractor.getSampleFlags());
+                    }
+                    videoExtractorDone = !tsVideoExtractor.advance();
                     if (videoExtractorDone) {
                         if (VERBOSE_TR)
-                            Log.d(TAG_TR, Thread.currentThread().getName() + "|_video extractor: EOS");
+                            Log.d(TAG_TR, Thread.currentThread().getName() + "|_video --extractor--: EOS");
                         codec.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     }
                     videoExtractedFrameCount++;
@@ -751,7 +611,7 @@ public class Transcoder {
                 }
                 boolean render = info.size != 0;
                 codec.releaseOutputBuffer(index, render);
-                if (render) {
+                if (render ) {
                     if (forceAllKeyFrame) {
                         Bundle bundle = new Bundle();
                         bundle.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
@@ -785,12 +645,14 @@ public class Transcoder {
                     inputSurface.releaseEGLContext();
 
                 }
+
                 if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
                     if (VERBOSE_TR)
                         Log.d(TAG_TR, Thread.currentThread().getName() + "|_video decoder: EOS");
                     videoDecoderDone = true;
                     videoEncoder.signalEndOfInputStream();
                 }
+
                 videoDecodedFrameCount++;
                 logState();
             }
@@ -871,15 +733,15 @@ public class Transcoder {
             public void onInputBufferAvailable(MediaCodec codec, int index) {
                 ByteBuffer decoderInputBuffer = codec.getInputBuffer(index);
                 while (!audioExtractorDone) {
-                    int size = audioExtractor.readSampleData(decoderInputBuffer, 0);
-                    long presentationTime = audioExtractor.getSampleTime();
+                    int size = tsAudioExtractor.readSampleData(decoderInputBuffer, 0);
+                    long presentationTime = tsAudioExtractor.getSampleTime();
                     if (VERBOSE_TR) {
                         Log.d(TAG_TR, Thread.currentThread().getName() + "|_audio extractor: returned buffer of size " + size + "\tpts:" + presentationTime);
                     }
                     if (size >= 0) {
-                        codec.queueInputBuffer(index, 0, size, presentationTime, audioExtractor.getSampleFlags());
+                        codec.queueInputBuffer(index, 0, size, presentationTime, tsAudioExtractor.getSampleFlags());
                     }
-                    audioExtractorDone = !audioExtractor.advance();
+                    audioExtractorDone = !tsAudioExtractor.advance();
                     if (audioExtractorDone) {
                         if (VERBOSE_TR)
                             Log.d(TAG_TR, Thread.currentThread().getName() + "|_audio extractor: EOS");
@@ -976,7 +838,7 @@ public class Transcoder {
         } catch (Exception e) {
             audioEncoder.release();
             if (e != null && e.getMessage() != null)
-                Log.e("Transcoder", "tryEncodeAudio:" + e.getMessage());
+                Log.e("TSTranscoder", "tryEncodeAudio:" + e.getMessage());
             MediaCodecInfo audioCodecInfo = CodecUtils.selectCodec(OUTPUT_AUDIO_MIME_TYPE);
             if (audioCodecInfo == null) {
                 // Don't fail CTS if they don't have an AAC codec (not here, anyway).
@@ -1133,7 +995,7 @@ public class Transcoder {
                 muxer.writeSampleData(outputAudioTrack, encoderOutputBuffer, info);
                 lastTimestampUsForAudio = info.presentationTimeUs;
             } catch (Exception e) {
-                Log.e(TAG, "Transcoder muxAudio error:" + e.getMessage());
+                Log.e(TAG, "TSTranscoder muxAudio error:" + e.getMessage());
             }
         }
         audioEncoder.releaseOutputBuffer(index, false);
@@ -1164,15 +1026,32 @@ public class Transcoder {
     }
 
     public void setOutPutFilePath(String outPutFilePath) {
+        File file = new File(outPutFilePath);
+        String parentPath=file.getParent();
+        File parent=new File(parentPath);
+        if( !parent.exists()){
+            parent.mkdirs();
+        }else if(!parent.isDirectory()){
+            throw new TranscodeRunTimeException("output dir exist as file");
+        }
         this.outPutFilePath = outPutFilePath;
     }
 
-    public String getInPutFilePath() {
-        return inPutFilePath;
+//    public String getInPutFilePath() {
+//        return inPutFilePath;
+//    }
+//
+//    public void setInPutFilePath(String inPutFilePath) {
+//        this.inPutFilePath = inPutFilePath;
+//    }
+
+
+    public void setInputFiles(List<String> inputFiles) {
+        this.inputFiles = inputFiles;
     }
 
-    public void setInPutFilePath(String inPutFilePath) {
-        this.inPutFilePath = inPutFilePath;
+    public List<String> getInputFiles() {
+        return inputFiles;
     }
 
     public int getHeight() {
@@ -1199,7 +1078,7 @@ public class Transcoder {
         this.bitRate = bitRate;
     }
 
-    public int getFps() {
+    public float getFps() {
         return fps;
     }
 
@@ -1231,7 +1110,8 @@ public class Transcoder {
 //            if (forceAllKeyFrame) keyIntervalPerSec = 0;
 //        }
         if (forceAllKeyFrame)
-            keyIntervalPerSec = CodecUtils.getEnCodeKeyIFrameInterval();
+            keyIntervalPerSec = CodecUtils.getEnCodeKeyIFrameInterval();//0
+        else  keyIntervalPerSec = 1;//1
     }
 
     public Callback getCallback() {
@@ -1326,5 +1206,20 @@ public class Transcoder {
         }
     }
 
+    public long getTrimBeginUs() {
+        return trimBeginUs;
+    }
+
+    public void setTrimBeginUs(long trimBeginUs) {
+        this.trimBeginUs = trimBeginUs;
+    }
+
+    public long getTrimEndUs() {
+        return trimEndUs;
+    }
+
+    public void setTrimEndUs(long trimEndUs) {
+        this.trimEndUs = trimEndUs;
+    }
 }
 

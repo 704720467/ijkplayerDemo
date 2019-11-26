@@ -39,7 +39,7 @@ public class GetPreviewLayout extends FrameLayout implements View.OnClickListene
 
     public GetPreviewLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mRootLayout = LayoutInflater.from(getContext()).inflate(R.layout., null);
+        mRootLayout = LayoutInflater.from(getContext()).inflate(R.layout.get_preview_layout, null);
         addView(mRootLayout);
         initView();
         addOnClick();
