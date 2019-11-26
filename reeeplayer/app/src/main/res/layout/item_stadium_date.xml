@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/left_margin_view"
+        android:layout_width="10px"
+        android:layout_height="0px"
+        android:visibility="gone" />
+
+    <cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout
+        android:id="@+id/content_layout"
+        android:layout_width="145px"
+        android:layout_height="125px"
+        android:layout_marginLeft="30px"
+        android:layout_marginTop="40px"
+        android:layout_marginBottom="40px"
+        android:background="@drawable/bg_stadium_date"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:textSize="14sp" />
+
+    </cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout>
+
+    <View
+        android:id="@+id/right_margin_view"
+        android:layout_width="40px"
+        android:layout_height="0px"
+        android:visibility="gone" />
+</cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout>

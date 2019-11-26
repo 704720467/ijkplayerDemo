@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#b2000000">
+    <!--返回键-->
+    <ImageView
+        android:id="@+id/ic_down_back"
+        android:layout_width="48px"
+        android:layout_height="28px"
+        android:layout_marginLeft="40px"
+        android:layout_marginTop="56px"
+        android:src="@drawable/ic_down_arrow_white" />
+    <!--前往编辑-->
+    <TextView
+        android:id="@+id/tv_to_edit"
+        android:layout_width="172px"
+        android:layout_height="60px"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="40px"
+        android:layout_marginRight="40px"
+        android:background="@drawable/bg_orange_round"
+        android:gravity="center"
+        android:text="前往编辑"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+    <!--下载选中片段 到相册-->
+    <TextView
+        android:id="@+id/tv_down"
+        android:layout_width="172px"
+        android:layout_height="60px"
+        android:layout_below="@+id/tv_to_edit"
+        android:layout_alignLeft="@+id/tv_to_edit"
+        android:layout_marginTop="30px"
+        android:background="@drawable/bg_border_round_white"
+        android:gravity="center"
+        android:text="下载片段"
+        android:textColor="#ffffffff"
+        android:textSize="14sp" />
+    <!--当前Get数量-->
+    <LinearLayout
+        android:id="@+id/get_counts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/content_video_layout"
+        android:layout_alignTop="@+id/tv_to_edit"
+        android:layout_alignBottom="@+id/tv_to_edit"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_current_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_total_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <!--删除片段-->
+    <LinearLayout
+        android:id="@+id/delete_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tv_to_edit"
+        android:layout_alignRight="@+id/content_video_layout"
+        android:layout_alignBottom="@+id/tv_to_edit"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="45px"
+            android:src="@drawable/ic_bin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20px"
+            android:text="删除本段"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+    <!--视频播放布局-->
+    <FrameLayout
+        android:id="@+id/content_video_layout"
+        android:layout_width="624px"
+        android:layout_height="350px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120px"
+        android:background="#ee5514">
+
+    </FrameLayout>
+    <!--上一段-->
+    <cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout
+        android:id="@+id/before_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="245px"
+        android:layout_marginRight="60px"
+        android:layout_toLeftOf="@+id/content_video_layout">
+
+        <ImageView
+            android:id="@+id/iv_before_part"
+            android:layout_width="90px"
+            android:layout_height="90px"
+            android:src="@drawable/ic_before_part" />
+
+        <TextView
+            android:id="@+id/tv_before_part"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_before_part"
+            android:layout_alignLeft="@+id/iv_before_part"
+            android:layout_alignRight="@+id/iv_before_part"
+            android:layout_marginTop="20px"
+            android:gravity="center"
+            android:text="上一段"
+            android:textColor="#ffffffff"
+            android:textSize="12sp" />
+    </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>
+    <!--下一段-->
+    <cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout
+        android:id="@+id/next_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60px"
+        android:layout_marginTop="245px"
+        android:layout_toRightOf="@+id/content_video_layout">
+
+        <ImageViewget_preview_layout
+            android:id="@+id/iv_next_part"
+            android:layout_width="90px"
+            android:layout_height="90px"
+            android:rotationY="180"
+            android:src="@drawable/ic_before_part" />
+
+        <TextView
+            android:id="@+id/tv_next_part"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_next_part"
+            android:layout_alignLeft="@+id/iv_next_part"
+            android:layout_alignRight="@+id/iv_next_part"
+            android:layout_marginTop="20px"
+            android:gravity="center"
+            android:text="下一段"
+            android:textColor="#ffffffff"
+            android:textSize="12sp" />
+    </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>
+    <!--裁剪文案提示-->
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/content_video_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57px"
+        android:text="可生成10-30秒视频，当前截取30.0秒"
+        android:textColor="#ffffffff"
+        android:textSize="12sp" />
+    <!--底部裁剪-->
+    <cn.reee.reeeplayer.view.seekBar.CutSeekBar
+        android:id="@+id/cut_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="112px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="80px"
+        android:layout_marginRight="80px"
+        android:layout_marginBottom="54px" />
+
+</cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

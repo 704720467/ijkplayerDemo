@@ -44,4 +44,9 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+
+    <!--圆角图片自定义属性-->
+    <declare-styleable name="RoundLittleImageView">
+        <attr name="image_view_radius" format="dimension" /><!--单位dp-->
+    </declare-styleable>
 </resources>

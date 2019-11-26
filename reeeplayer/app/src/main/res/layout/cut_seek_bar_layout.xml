@@ -1,0 +1,116 @@
+<cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout
+        android:id="@+id/image_thumb_content"
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:layout_centerVertical="true"
+        android:background="#ee5514"
+        android:orientation="horizontal" />
+    <!--左边遮罩-->
+    <!--<View-->
+        <!--android:id="@+id/left_marker"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100px"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_toLeftOf="@+id/left_touch_bar"-->
+        <!--android:background="#33000000" />-->
+    <!--&lt;!&ndash;右边遮罩&ndash;&gt;-->
+    <!--<View-->
+        <!--android:id="@+id/right_marker"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100px"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_toRightOf="@+id/right_touch_bar"-->
+        <!--android:background="#33000000" />-->
+    <View
+        android:id="@+id/middle_select_view"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_centerInParent="true"
+        android:background="#00ff00" />
+    <!--左边把手-->
+    <cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout
+        android:id="@+id/left_touch_bar"
+        android:layout_width="32px"
+        android:layout_height="112px"
+        android:layout_toLeftOf="@+id/middle_select_view"
+        android:background="@drawable/bg_seek_touch_bar_left">
+
+        <View
+            android:id="@+id/left_middle_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true" />
+
+        <View
+            android:layout_width="4px"
+            android:layout_height="40px"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4px"
+            android:layout_toLeftOf="@+id/left_middle_view"
+            android:background="@drawable/seek_touch_content" />
+
+        <View
+            android:layout_width="4px"
+            android:layout_height="40px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4px"
+            android:layout_toRightOf="@+id/left_middle_view"
+            android:background="@drawable/seek_touch_content" />
+
+    </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>
+    <!--右边把手-->
+    <cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout
+        android:id="@+id/right_touch_bar"
+        android:layout_width="32px"
+        android:layout_height="112px"
+        android:layout_toRightOf="@+id/middle_select_view"
+        android:background="@drawable/bg_seek_touch_bar_right">
+
+        <View
+            android:id="@+id/right_middle_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true" />
+
+        <View
+            android:layout_width="4px"
+            android:layout_height="40px"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="4px"
+            android:layout_toLeftOf="@+id/right_middle_view"
+            android:background="@drawable/seek_touch_content" />
+
+        <View
+            android:layout_width="4px"
+            android:layout_height="40px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4px"
+            android:layout_toRightOf="@+id/right_middle_view"
+            android:background="@drawable/seek_touch_content" />
+    </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>
+    <!--顶部一选择区域线-->
+    <View
+        android:id="@+id/top_line_view"
+        android:layout_width="10px"
+        android:layout_height="6px"
+        android:layout_alignTop="@+id/left_touch_bar"
+        android:layout_toLeftOf="@+id/right_touch_bar"
+        android:layout_toRightOf="@+id/left_touch_bar"
+        android:background="#ffffff" />
+    <!--底部一选择区域线-->
+    <View
+        android:id="@+id/bottom_line_view"
+        android:layout_width="10px"
+        android:layout_height="6px"
+        android:layout_alignBottom="@+id/left_touch_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/right_touch_bar"
+        android:layout_toRightOf="@+id/left_touch_bar"
+        android:background="#ffffff" />
+</cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

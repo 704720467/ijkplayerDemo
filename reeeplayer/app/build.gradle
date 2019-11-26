@@ -45,5 +45,6 @@ dependencies {
     implementation project(':ijkplayer-java')
     implementation project(':libvideoedit')
     implementation project(':permission')
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
 //    compile project(':ijkplayer-armv7a')
 }

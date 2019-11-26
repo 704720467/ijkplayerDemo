@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/left_margin_view"
+        android:layout_width="10px"
+        android:layout_height="0px"
+        android:visibility="gone" />
+
+    <cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="308px"
+        android:layout_height="173px"
+        android:layout_marginLeft="30px"
+        android:layout_marginTop="40px"
+        android:layout_marginBottom="40px"
+        android:background="@drawable/bg_stadium_angle"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <cn.reee.reeeplayer.view.RoundLittleImageView
+            android:id="@+id/iv_angle_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:layout_margin="1dp"
+            android:src="@drawable/ic_angle_test"
+            app:image_view_radius="10px" />
+
+        <TextView
+            android:id="@+id/tv_angle_name"
+            android:layout_width="110px"
+            android:layout_height="44px"
+            android:layout_marginLeft="12px"
+            android:layout_marginTop="12px"
+            android:background="@drawable/bg_stadium_angle_text"
+            android:gravity="center"
+            android:text="角度二"
+            android:textColor="#ffffffff"
+            android:textSize="12sp" />
+
+    </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>
+
+    <View
+        android:id="@+id/right_margin_view"
+        android:layout_width="40px"
+        android:layout_height="0px"
+        android:visibility="gone" />
+</cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout>

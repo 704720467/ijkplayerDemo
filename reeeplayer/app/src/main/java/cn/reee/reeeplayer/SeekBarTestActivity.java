@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class SeekBarTestActivity extends AppCompatActivity {
+import cn.reee.reeeplayer.base.BaseActivity;
+
+public class SeekBarTestActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
