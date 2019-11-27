@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".VideoViewPlayTsActivity"></activity>
         <activity android:name=".PlayArrayTsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,10 +25,8 @@
         </activity>
         <activity
             android:name=".SeekBarTestActivity"
-            android:screenOrientation="landscape">
-
-        </activity>
-        <activity android:name=".TranscoderTsActivity"></activity>
+            android:screenOrientation="landscape"></activity>
+        <activity android:name=".TranscoderTsActivity" />
         <activity
             android:name=".VideoPlayerTestActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

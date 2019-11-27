@@ -224,58 +224,58 @@ public class TranscoderTsActivity extends AppCompatActivity {
         transCoder.setInPutFilePath(videoPath);
         transCoder.setOutPutFilePath(newOutPutFilePath);
         transCoder.setForceAllKeyFrame(true);
-
-        transCoder.setCallback(new Transcoder.Callback() {
-            @Override
-            public void onThumbGenerated(Bitmap thumb, int index, long pts) {
-                Log.i(TAG, "onThumbGenerated:" + index + "\t" + pts + "\t" + thumb.getWidth() + "x" + thumb.getHeight());
-//                String filename = thumbPath + "/" + index + ".png";
-//                BufferedOutputStream bos = null;
-//                try {
-//                    bos = new BufferedOutputStream(new FileOutputStream(filename));
-//                    thumb.compress(Bitmap.CompressFormat.PNG, 90, bos);
-//                    thumb.recycle();
-//                    bos.close();
-//                } catch (Exception e2) {
-//                    e2.printStackTrace();
-//                }
-
-            }
-
-            @Override
-            public void onProgress(float percent) {
-                if (VERBOSE) Log.i(TAG, "percent:" + percent);
-//                if (index == maxIndex) {
-//                    dialogProgressView.setProgress(percent);
-//                }
-            }
-
-            @Override
-            public void OnSuccessed(final String outPutFilePath) {
-                TranscoderTsActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        String filename = outPutFilePath.substring(outPutFilePath.lastIndexOf("/") + 1);
-//                        FileUtils.reName(outPutFilePath, filename.replace(tempStr, ""));
-//                        transCodeSuccessed();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(final String errmsg) {
-                Log.i(TAG, "onError:" + errmsg);
-                TranscoderTsActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        delayLoadingDialogManager.hideLoading();
-                        ToastUtil.showToast(TranscoderTsActivity.this, errmsg);
-                    }
-                });
-            }
-        });
-        delayLoadingDialogManager.showLoading();
-        transCoder.transCode();
+//
+//        transCoder.setCallback(new Transcoder.Callback() {
+//            @Override
+//            public void onThumbGenerated(Bitmap thumb, int index, long pts) {
+//                Log.i(TAG, "onThumbGenerated:" + index + "\t" + pts + "\t" + thumb.getWidth() + "x" + thumb.getHeight());
+////                String filename = thumbPath + "/" + index + ".png";
+////                BufferedOutputStream bos = null;
+////                try {
+////                    bos = new BufferedOutputStream(new FileOutputStream(filename));
+////                    thumb.compress(Bitmap.CompressFormat.PNG, 90, bos);
+////                    thumb.recycle();
+////                    bos.close();
+////                } catch (Exception e2) {
+////                    e2.printStackTrace();
+////                }
+//
+//            }
+//
+//            @Override
+//            public void onProgress(float percent) {
+//                if (VERBOSE) Log.i(TAG, "percent:" + percent);
+////                if (index == maxIndex) {
+////                    dialogProgressView.setProgress(percent);
+////                }
+//            }
+//
+//            @Override
+//            public void OnSuccessed(final String outPutFilePath) {
+//                TranscoderTsActivity.this.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+////                        String filename = outPutFilePath.substring(outPutFilePath.lastIndexOf("/") + 1);
+////                        FileUtils.reName(outPutFilePath, filename.replace(tempStr, ""));
+////                        transCodeSuccessed();
+//                    }
+//                });
+//
+//            }
+//
+//            @Override
+//            public void onError(final String errmsg) {
+//                Log.i(TAG, "onError:" + errmsg);
+//                TranscoderTsActivity.this.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        delayLoadingDialogManager.hideLoading();
+//                        ToastUtil.showToast(TranscoderTsActivity.this, errmsg);
+//                    }
+//                });
+//            }
+//        });
+//        delayLoadingDialogManager.showLoading();
+//        transCoder.transCode();
     }
 }

@@ -1,0 +1,15 @@
+#指定需要CMAKE的最小版本
+cmake_minimum_required(VERSION 3.4.1)
+
+
+SET(CMAKE_CXX_FLAGS "-Wno-error=format-security -Wno-error=pointer-sign")
+
+SET(SOURCE_FILES  common.h config.h fastest_coeffs.h float_cast.h high_qual_coeffs.h mid_qual_coeffs.h resample.c resample.h samplerate.c samplerate.h src_linear.c src_sinc.c src_zoh.c native.cpp)
+
+
+INCLUDE_DIRECTORIES(/usr/local/include)
+INCLUDE_DIRECTORIES(${ANDROID_SYSROOT}/usr/include/arm-linux-androideabi)
+LINK_DIRECTORIES(/usr/local/lib)
+
+ADD_LIBRARY(native SHARED ${SOURCE_FILES})
+SET_TARGET_PROPERTIES(  PROPERTIES  RUNTIME_OUTPUT_DIRECTORY> "${PROJECT_SOURCE_DIR}/lib")

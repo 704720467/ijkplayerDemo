@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".PlayArrayTsActivity">
 
+    <com.zp.libvideoedit.WidthHeightRatioGlSurfaceView
+        android:id="@+id/playerview"
+        android:layout_width="320dp"
+        android:layout_height="180dp"
+        android:layout_centerInParent="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,5 +20,22 @@
         android:text="播放一组TS播放器"
         android:textColor="#ee5514"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/bt_init"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="INIT" />
+
+    <Button
+        android:id="@+id/bt_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="100px"
+        android:layout_toRightOf="@+id/bt_init"
+        android:text="PLAY" />
+
 
 </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

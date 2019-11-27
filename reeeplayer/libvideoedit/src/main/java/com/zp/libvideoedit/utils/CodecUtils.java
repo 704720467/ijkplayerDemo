@@ -680,6 +680,18 @@ public class CodecUtils {
         else return (int) (0.25 * fps * width * height);
     }
 
+    /**
+     * @param width
+     * @param height
+     * @param fps
+     * @param bpp    0.25-0.5
+     * @return
+     */
+    public static final int calcBitRate(int width, int height, int fps, float bpp) {
+        int bitrate = (int) (bpp * fps * width * height);
+        return bitrate;
+    }
+
     public static final int calcBitRate(int width, int height, float fps) {
         int bitrate = (int) (DEFAULT_PBB * fps * width * height);
         if (bitrate < 1024) bitrate = 1024;

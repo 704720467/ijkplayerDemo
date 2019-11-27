@@ -11,8 +11,8 @@ public class Constants {
      */
     public static final boolean VERBOSE = true;//BuildConfig.LOG_DEBUG;
 
-    public static final boolean VERBOSE_V = VERBOSE && false;
-    public static final boolean VERBOSE_LOOP_V = VERBOSE && false;
+    public static final boolean VERBOSE_V = VERBOSE && true;
+    public static final boolean VERBOSE_LOOP_V = VERBOSE && true;
 
     public static final boolean VERBOSE_A = VERBOSE && false;
     public static final boolean VERBOSE_LOOP_A = VERBOSE && false;
@@ -30,7 +30,7 @@ public class Constants {
     public static final boolean VERBOSE_M = VERBOSE && false;
     public static final boolean VERBOSE_EDIT = VERBOSE && false;
     public static final boolean VERBOSE_SEEK = VERBOSE && false;
-    public static final boolean GL_DEBUG=false;
+    public static final boolean GL_DEBUG = false;
     /**
      * script
      */
@@ -62,8 +62,6 @@ public class Constants {
 
     public static final String EXPORT_VIDOE_ORIGINAL_AUDIO = "_original_audio.mp3";
     public static final String TAG_EXTRA_AUDIO = "AE_ExtratAudio";
-
-
 
 
     /**
@@ -104,7 +102,7 @@ public class Constants {
      */
     public static float DEFAULT_PBB = 0.25f;
 
-    public static float VIDEO_PRE_START_TIME = 0.63f;//提前多少秒唤醒线程
+    public static float VIDEO_PRE_START_TIME = 0.3f;//提前多少秒唤醒线程
 
     public static final String SD_ROOT = Environment.getExternalStorageDirectory().getPath();
     public static final String APP_EXTERNAL_ROOT_PATH = SD_ROOT + "/vni";
@@ -112,5 +110,8 @@ public class Constants {
     public static final String TEMP_SPECIAL_PATH = TEMP_FILE_PATH + "/.special/";
     public static final String EXTRACT_AUDIO_PATH = APP_EXTERNAL_ROOT_PATH + "/cts/ExtractAudio/";//从视频中提取出的音乐文件夹
     public static final String TEMP_FILTER_PATH = TEMP_FILE_PATH + "/.filter";
+    public static final String TEMP_REVERSE_PATH = TEMP_FILE_PATH + "/reverse";
+    public static final String IMG_TRANSCODE_PATH = APP_EXTERNAL_ROOT_PATH + "/cts/1/.vni/img/";
+
 
 }

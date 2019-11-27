@@ -71,4 +71,7 @@
     <string name="VideoView_player_IjkExoMediaPlayer">Player: IjkExoMediaPlayer</string>
     <string name="please_wait" translatable="false">请稍候&#8230;</string>
 
+    <string name="no_find_videopath">未找到视频文件</string>
+
+
 </resources>

@@ -15,6 +15,7 @@ import com.zp.libvideoedit.GPUImage.Core.GPUImageTextureCoordinates;
 import com.zp.libvideoedit.GPUImage.Core.GPUSize;
 import com.zp.libvideoedit.GPUImage.Core.GPUUtiles;
 import com.zp.libvideoedit.GPUImage.FilterCore.GPUImageFilter;
+import com.zp.libvideoedit.VideoEditUtils;
 import com.zp.libvideoedit.utils.BitmapUtil;
 import com.zp.libvideoedit.utils.JsonUtil;
 
@@ -54,11 +55,9 @@ public class VNISpecialEffectsFilter extends GPUImageFilter {
     protected int mInputSizeLocal = -1;
     protected int mNoiseTextureLocal = -1;
     private SpecialEffectModel specialEffectModel;
-    private Context context;
 
-    public VNISpecialEffectsFilter(String effectJson, Context context) {
+    public VNISpecialEffectsFilter(String effectJson) {
         super();
-        this.context = context;
         if (!TextUtils.isEmpty(effectJson)) {
             specialEffectModel = JsonUtil.parseJsonToBean(effectJson, SpecialEffectModel.class);
             vertextShaderString = TextUtils.isEmpty(specialEffectModel.getVsh()) ? AlphaBlendFilterVertexShaderString : specialEffectModel.getVsh();
@@ -76,7 +75,7 @@ public class VNISpecialEffectsFilter extends GPUImageFilter {
         mInputSizeLocal = specialEffectModel.isSizeRelated() ? mFilterProgram.uniformIndex("inputSize") : -1;
         mNoiseTextureLocal = !TextUtils.isEmpty(specialEffectModel.getNoise()) ? mFilterProgram.uniformIndex("noiseTexture") : -1;
         if (mNoiseTextureLocal != -1) {
-            bitmap = BitmapUtil.getImageFromAssetsFile(context, "effect/" + specialEffectModel.getNoise());
+            bitmap = BitmapUtil.getImageFromAssetsFile(VideoEditUtils.instance, "effect/" + specialEffectModel.getNoise());
             mPixelSizeOfImage = new GPUSize(bitmap.getWidth(), bitmap.getHeight());
             initPic();
         }
