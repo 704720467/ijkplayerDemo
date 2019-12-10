@@ -344,7 +344,8 @@ public class VideoPlayer implements VideoPlayerCoreManager.VideoManagerCallBack 
         if (VERBOSE)
             Log.i(TAG, caller() + "VideoPlayer_onCompositionComplete" + compositionCallBack + generateCallStack());
         mBuildOkCount--;
-        if (mBuildOkCount < 1 && compositionCallBack != null)
+//        if (mBuildOkCount < 1 && compositionCallBack != null)
+        if (compositionCallBack != null)
             ((Activity) context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -353,9 +354,15 @@ public class VideoPlayer implements VideoPlayerCoreManager.VideoManagerCallBack 
             });
     }
 
+    @Override
+    public void drawCostTime(long startTime, long endTime) {
+        if (compositionCallBack != null) compositionCallBack.drawCostTime(startTime, endTime);
+    }
 
     public interface VideoCompositionCallBack2 {
         void setCompositionComplete();
+
+        void drawCostTime(long startTime, long endTime);
     }
 
     public void release() {

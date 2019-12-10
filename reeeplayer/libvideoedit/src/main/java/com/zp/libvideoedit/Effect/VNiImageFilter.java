@@ -44,10 +44,12 @@ public class VNiImageFilter extends VNiLutFilter {
         loadFilters();
         int index = LookupInstance.getInstance(context).indexOfName(filterName);
         index = index < 0 ? 0 : index;
-        if (index >= 0) {
-            filterModel = (FilterModel) LookupInstance.getInstance(context).getAllFilter().get(index);
-            addLut(filterModel.getUrl());
-        }
+//        if (index >= 0) {
+//            filterModel = (FilterModel) LookupInstance.getInstance(context).getAllFilter().get(index);
+//            addLut(filterModel.getUrl());
+//        }
+        //TODO 测试==== 之后使用上面的
+        addLut("");
     }
 
     public VNiImageFilter(Context context, int index) {
@@ -131,12 +133,12 @@ public class VNiImageFilter extends VNiLutFilter {
 
     public void addLut(String url) {
         Bitmap bitmap = null;
-        String path = EditConstants.TEMP_FILTER_PATH + "/" + url;
-        if (new File(path).exists()) {
-            bitmap = BitmapUtil.loadFileToBitmap(path);
-        }
+//        String path = EditConstants.TEMP_FILTER_PATH + "/" + url;
+//        if (new File(path).exists()) {
+//            bitmap = BitmapUtil.loadFileToBitmap(path);
+//        }
         if (bitmap == null)
-            bitmap = AndroidResourceManager.getAndroidResourceManager(context).readBitmapFromAssets(lutDir + "0.png");
+            bitmap = AndroidResourceManager.getAndroidResourceManager(context).readBitmapFromAssets(lutDir + "33.png");
 
         lutpicWidth = bitmap.getWidth();
         lutpicHeight = bitmap.getHeight();

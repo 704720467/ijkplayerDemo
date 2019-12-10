@@ -205,6 +205,11 @@ public class PlayArrayTsActivity extends BaseActivity {
 //                            typesetManager.updateTypeset();
 //                        }
                     }
+
+                    @Override
+                    public void drawCostTime(long startTime, long endTime) {
+
+                    }
                 }, BuildType.BuildType_Default);
     }
 

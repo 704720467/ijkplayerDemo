@@ -676,6 +676,7 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        long startTime = System.currentTimeMillis();
         long timeStampOfTimer = timer.getCurrentTimeMs() * 1000 * 1000;
         clearnTarget();
         long currentTimeStamp = 0;
@@ -1118,7 +1119,10 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
             if (VERBOSE)
                 Log.e(TAG_V, caller() + "should_never_happed_render_error:second:" + second + ", currentChunks:" + (currentChunks != null ? currentChunks.size() : "-1") + "chunkIndex:" + (currentChunks != null && currentChunks.size() > 0 ? currentChunks.get(0).chunkIndex : -1));
         }
-
+        long endTime = System.currentTimeMillis();
+        Log.e("==========>", "渲染整体话费时间：" + (endTime - startTime));
+        if (videoManagerCallBack != null)
+            videoManagerCallBack.drawCostTime(startTime, endTime);
     }
 
     public void release() {
@@ -1463,6 +1467,8 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
 
         //准备成功
         void onCompositionComplete();
+
+        void drawCostTime(long startTime, long endTime);
     }
 
 
