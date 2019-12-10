@@ -2,8 +2,8 @@ package com.zp.libvideoedit.EditCore;
 
 import android.util.Log;
 
-import static com.zp.libvideoedit.Constants.TAG_A;
-import static com.zp.libvideoedit.Constants.VERBOSE_A;
+import static com.zp.libvideoedit.EditConstants.TAG_A;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_A;
 
 /**
  * 音频解码出的数据

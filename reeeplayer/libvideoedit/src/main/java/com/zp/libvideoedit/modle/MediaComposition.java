@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.zp.libvideoedit.Constants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG;
 
 
 /**

@@ -5,7 +5,7 @@ import android.opengl.GLES20;
 import android.util.Log;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageTextureCoordinates;
 import com.zp.libvideoedit.GPUImage.Core.GPUUtiles;
@@ -59,12 +59,12 @@ public class VNiImageAlphaBlendFilter extends GPUImageAlphaBlendFilter {
             GLES20.glUniform1i(mfilterInputTextureUniform2, 3);
 
         }
-        if (Constants.VERBOSE_GL)
-            Log.d(Constants.TAG_GL, "GPUImageAlphaBlendFilter_renderToTextureWithVertices" + ",Size: " + sizeOfFBO());
+        if (EditConstants.VERBOSE_GL)
+            Log.d(EditConstants.TAG_GL, "GPUImageAlphaBlendFilter_renderToTextureWithVertices" + ",Size: " + sizeOfFBO());
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glFlush();
-        if (Constants.VERBOSE_GL)
-            Log.d(Constants.TAG_GL, "GPUImageAlphaBlendFilter_renderToTextureWithVertices" + ",first: " + mFirstInputFramebuffer + " sec: " + secondInputFramebuffer);
+        if (EditConstants.VERBOSE_GL)
+            Log.d(EditConstants.TAG_GL, "GPUImageAlphaBlendFilter_renderToTextureWithVertices" + ",first: " + mFirstInputFramebuffer + " sec: " + secondInputFramebuffer);
         if (mFirstInputFramebuffer != null)
             mFirstInputFramebuffer.unlock();
         if (secondInputFramebuffer != null)

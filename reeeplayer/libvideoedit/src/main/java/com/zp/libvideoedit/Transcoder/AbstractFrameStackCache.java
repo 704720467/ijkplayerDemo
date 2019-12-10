@@ -12,9 +12,9 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Stack;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_TR;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_TR;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
 
 

@@ -21,8 +21,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
-import com.zp.libvideoedit.Constants;
-import com.zp.libvideoedit.R;
+import com.zp.libvideoedit.EditConstants;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -377,7 +376,7 @@ public class BitmapUtil {
             bitmap = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(Constants.TAG, "a7", e);
+            Log.e(EditConstants.TAG, "a7", e);
         }
         return bitmap;
     }

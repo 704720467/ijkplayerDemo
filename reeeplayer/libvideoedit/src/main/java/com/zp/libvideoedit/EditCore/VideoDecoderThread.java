@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.Surface;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.AndroidDispatchQueue;
 import com.zp.libvideoedit.exceptions.EffectRuntimeException;
 import com.zp.libvideoedit.modle.DecoderThreadState;
@@ -24,14 +24,14 @@ import com.zp.libvideoedit.utils.FormatUtils;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_EN;
-import static com.zp.libvideoedit.Constants.TAG_V;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE_EN;
-import static com.zp.libvideoedit.Constants.VERBOSE_LOOP_V;
-import static com.zp.libvideoedit.Constants.VERBOSE_SEEK;
-import static com.zp.libvideoedit.Constants.VERBOSE_V;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_EN;
+import static com.zp.libvideoedit.EditConstants.TAG_V;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_EN;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_LOOP_V;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_SEEK;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_V;
 import static com.zp.libvideoedit.modle.DecoderThreadState.idle;
 import static com.zp.libvideoedit.modle.DecoderThreadState.readly;
 import static com.zp.libvideoedit.modle.DecoderThreadState.runing;
@@ -293,7 +293,7 @@ public class VideoDecoderThread extends Thread {
 
         while (true) {
 //            videoDecoderInputBuffers = videoDecoder.getInputBuffers();
-            int decoderInputBufferIndex = videoDecoder.dequeueInputBuffer(Constants.TIMEOUT_USEC);
+            int decoderInputBufferIndex = videoDecoder.dequeueInputBuffer(EditConstants.TIMEOUT_USEC);
             if (VERBOSE_SEEK)
                 Log.d(TAG_V, formartLog("asy_seek_" + Thread.currentThread().getName(), "decodeAndRenderSeekFrame", "decoderInputBufferIndex:" + decoderInputBufferIndex));
             int retryCount = 0;
@@ -334,7 +334,7 @@ public class VideoDecoderThread extends Thread {
                 videoDecoder.queueInputBuffer(decoderInputBufferIndex, 0, extractResult.getSize(), ptsInTrack, extractResult.getFlag());
             }
 
-            int outputBufferIndex = videoDecoder.dequeueOutputBuffer(videoDecoderOutputBufferInfo, Constants.TIMEOUT_USEC);
+            int outputBufferIndex = videoDecoder.dequeueOutputBuffer(videoDecoderOutputBufferInfo, EditConstants.TIMEOUT_USEC);
             if (VERBOSE_SEEK)
                 Log.d(TAG_V, formartLog("asy_seek_" + Thread.currentThread().getName(), "decodeAndRenderSeekFrame", "outputBufferIndex:" + outputBufferIndex));
             if (outputBufferIndex < 0) {
@@ -347,7 +347,7 @@ public class VideoDecoderThread extends Thread {
             if ((videoDecoderOutputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
                 videoDecoder.releaseOutputBuffer(outputBufferIndex, false);
                 if (VERBOSE_SEEK) {
-                    Log.d(Constants.TAG_V, dequeueLog("decodeAndRenderSeekFrame_result:", "BUFFER_FLAG_CODEC_CONFIG"));
+                    Log.d(EditConstants.TAG_V, dequeueLog("decodeAndRenderSeekFrame_result:", "BUFFER_FLAG_CODEC_CONFIG"));
                 }
                 continue;
             }
@@ -355,7 +355,7 @@ public class VideoDecoderThread extends Thread {
             //当前segment解码结束
             if ((videoDecoderOutputBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0 || videoDecoderOutputBufferInfo.size <= 0) {
                 if (VERBOSE_SEEK) {
-                    Log.d(Constants.TAG_V, dequeueLog("decodeAndRenderSeekFramer_result", "decoder_EOS BUFFER_FLAG_END_OF_STREAM"));
+                    Log.d(EditConstants.TAG_V, dequeueLog("decodeAndRenderSeekFramer_result", "decoder_EOS BUFFER_FLAG_END_OF_STREAM"));
                 }
                 videoDecoder.releaseOutputBuffer(outputBufferIndex, true);
                 break;
@@ -377,7 +377,7 @@ public class VideoDecoderThread extends Thread {
         if (videoDecoder == null) return;
         while (true) {
             try {
-                int outputBufferIndex = videoDecoder.dequeueOutputBuffer(videoDecoderOutputBufferInfo, Constants.TIMEOUT_USEC);
+                int outputBufferIndex = videoDecoder.dequeueOutputBuffer(videoDecoderOutputBufferInfo, EditConstants.TIMEOUT_USEC);
                 if (outputBufferIndex > 0) {
                     if (VERBOSE_SEEK)
                         Log.d(TAG_V, formartLog("asy_seek_" + Thread.currentThread().getName(), "clearInputOrOutputBuffer释放output缓存区", "seekMs:" + secUs + ", outputBufferIndex > 0"));
@@ -505,14 +505,14 @@ public class VideoDecoderThread extends Thread {
                 //判断停止解码
                 if (threadState == stoping || threadState == stoped || stopFlag) {
                     if (VERBOSE_LOOP_V)
-                        Log.d(Constants.TAG_V, caller() + loopString("stoping...", ""));
+                        Log.d(EditConstants.TAG_V, caller() + loopString("stoping...", ""));
                     threadState = stoping;
                     return;
                 }
 
                 if (threadState == idle && runloopOnce && !isExport() || isExport() && threadState == idle) {
                     if (VERBOSE_LOOP_V)
-                        Log.w(Constants.TAG_V, caller() + loopString("waitLock.waite...", ""));
+                        Log.w(EditConstants.TAG_V, caller() + loopString("waitLock.waite...", ""));
 
                     synchronized (pauseLock) {
                         pauseLock.notifyAll();
@@ -521,7 +521,7 @@ public class VideoDecoderThread extends Thread {
                         waitLock.wait();
                     }
                     if (VERBOSE_LOOP_V)
-                        Log.d(Constants.TAG_V, caller() + loopString("waitLock.continue...", ""));
+                        Log.d(EditConstants.TAG_V, caller() + loopString("waitLock.continue...", ""));
                     continue;
                 }
 //                synchronized (pauseLock) {
@@ -533,11 +533,11 @@ public class VideoDecoderThread extends Thread {
                     Log.e(TAG_V, caller() + formartELog("loop", "extratorAndInqueueFrame", e.getMessage()), e);
                 }
                 if (VERBOSE_LOOP_V)
-                    Log.d(Constants.TAG_V, caller() + loopString("extract", "result:" + inqueueState));
+                    Log.d(EditConstants.TAG_V, caller() + loopString("extract", "result:" + inqueueState));
 
                 boolean skip = shouldSkipDequeueAndRender();
                 if (VERBOSE_LOOP_V)
-                    Log.d(Constants.TAG_V, caller() + loopString("shouldSkipDequeueAndRender", "skip:" + skip));
+                    Log.d(EditConstants.TAG_V, caller() + loopString("shouldSkipDequeueAndRender", "skip:" + skip));
                 try {
                     if (!skip) dequeueAndRender();
                 } catch (Exception e) {
@@ -545,11 +545,11 @@ public class VideoDecoderThread extends Thread {
                 }
 
                 if (VERBOSE_LOOP_V)
-                    Log.d(Constants.TAG_V, caller() + loopString("dequeue", "result:" + dequeueState));
+                    Log.d(EditConstants.TAG_V, caller() + loopString("dequeue", "result:" + dequeueState));
 
                 boolean shouldIdel = shouldIdelRunloop();
                 if (VERBOSE_LOOP_V)
-                    Log.d(Constants.TAG_V, caller() + loopString("shouldIdelRunloop", "idel:" + shouldIdel));
+                    Log.d(EditConstants.TAG_V, caller() + loopString("shouldIdelRunloop", "idel:" + shouldIdel));
 
                 if (shouldIdel) {
                     threadState = idle;
@@ -562,7 +562,7 @@ public class VideoDecoderThread extends Thread {
                             Log.d(TAG_V, caller() + loopString("onDecoderThreadReady", ""));
                         decoderCallBack.onDecoderThreadReady(this);
                     } catch (Exception e) {
-                        Log.e(Constants.TAG_V, caller() + loopEString("decoderCallBack", "onDecoderThreadReady:" + e.getMessage()), e);
+                        Log.e(EditConstants.TAG_V, caller() + loopEString("decoderCallBack", "onDecoderThreadReady:" + e.getMessage()), e);
                     }
                 }
 //                pauseLock.notifyAll();
@@ -570,9 +570,9 @@ public class VideoDecoderThread extends Thread {
                 if (VERBOSE_LOOP_V)
                     Log.d(TAG_V, caller() + loopString("end:loop_" + loopIndex, ""));
             } catch (IllegalStateException e) {
-                Log.w(Constants.TAG_V, caller() + loopEString("loop_inner_error", "IllegalStateException:" + e.getMessage()), e);
+                Log.w(EditConstants.TAG_V, caller() + loopEString("loop_inner_error", "IllegalStateException:" + e.getMessage()), e);
             } catch (Exception e) {
-                Log.e(Constants.TAG_V, caller() + loopEString("loop_inner_error", "error:" + e.getMessage()), e);
+                Log.e(EditConstants.TAG_V, caller() + loopEString("loop_inner_error", "error:" + e.getMessage()), e);
                 throw new EffectRuntimeException(e);
             } finally {
 
@@ -652,9 +652,9 @@ public class VideoDecoderThread extends Thread {
             try {
                 trackExtractor.release();
                 if (VERBOSE_V)
-                    Log.d(Constants.TAG_V, formartLog("Release", "release trackExtractor"));
+                    Log.d(EditConstants.TAG_V, formartLog("Release", "release trackExtractor"));
             } catch (Exception e) {
-                Log.e(Constants.TAG_V, formartELog("Release", "release trackExtractor", e.getMessage()), e);
+                Log.e(EditConstants.TAG_V, formartELog("Release", "release trackExtractor", e.getMessage()), e);
             }
         }
         trackExtractor = null;
@@ -663,16 +663,16 @@ public class VideoDecoderThread extends Thread {
         if (videoDecoder != null) {
             try {
                 videoDecoder.stop();
-                if (VERBOSE_V) Log.d(Constants.TAG_V, formartLog("Release", "videoDecoder.stop()"));
+                if (VERBOSE_V) Log.d(EditConstants.TAG_V, formartLog("Release", "videoDecoder.stop()"));
             } catch (Exception e) {
-                Log.w(Constants.TAG_V, formartELog("Release", "videoDecoder.stop error:", e.getMessage()), e);
+                Log.w(EditConstants.TAG_V, formartELog("Release", "videoDecoder.stop error:", e.getMessage()), e);
             }
             try {
                 videoDecoder.release();
                 if (VERBOSE_V)
-                    Log.d(Constants.TAG_V, formartLog("Release", "videoDecoder.release()"));
+                    Log.d(EditConstants.TAG_V, formartLog("Release", "videoDecoder.release()"));
             } catch (Exception e) {
-                Log.w(Constants.TAG_V, formartELog("Release", "videoDecoder.release error:", e.getMessage()), e);
+                Log.w(EditConstants.TAG_V, formartELog("Release", "videoDecoder.release error:", e.getMessage()), e);
             }
         }
         videoDecoder = null;
@@ -725,7 +725,7 @@ public class VideoDecoderThread extends Thread {
         if (inqueueState != InqueueState.tryAgain) {
             result = trackExtractor.hasNext();
             if (VERBOSE_LOOP_V)
-                Log.d(Constants.TAG_V, caller() + extractLog("hasNextresult", result.toString()));
+                Log.d(EditConstants.TAG_V, caller() + extractLog("hasNextresult", result.toString()));
 
             hasNextState = result.getState();
         }
@@ -758,11 +758,11 @@ public class VideoDecoderThread extends Thread {
         if (hasNextState == ExtractState.segEos || hasNextState == ExtractState.hasNext) {
             int decoderInputBufferIndex = -1;
 //            try {
-            decoderInputBufferIndex = videoDecoder.dequeueInputBuffer(Constants.TIMEOUT_USEC);
+            decoderInputBufferIndex = videoDecoder.dequeueInputBuffer(EditConstants.TIMEOUT_USEC);
 //            } catch (Exception e) {
 //                Log.e(TAG_V, caller() + "extratorAndInqueueFrame_java.lang.IllegalStateException:" + e.getMessage());
 //                safeCreateDecoder(trackExtractor.getInputMediaFormat());
-//                decoderInputBufferIndex = videoDecoder.dequeueInputBuffer(Constants.TIMEOUT_USEC);
+//                decoderInputBufferIndex = videoDecoder.dequeueInputBuffer(EditConstants.TIMEOUT_USEC);
 //            }
             if (decoderInputBufferIndex < 0) {
                 if (VERBOSE_LOOP_V)
@@ -773,7 +773,7 @@ public class VideoDecoderThread extends Thread {
             if (hasNextState == ExtractState.segEos) {
                 videoDecoder.queueInputBuffer(decoderInputBufferIndex, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                 if (VERBOSE_LOOP_V)
-                    Log.d(Constants.TAG_V, caller() + extractLog("videoDecoder_SEND_EOS", ""));
+                    Log.d(EditConstants.TAG_V, caller() + extractLog("videoDecoder_SEND_EOS", ""));
                 inqueueState = InqueueState.segEos;
                 return inqueueState;
             }
@@ -797,7 +797,7 @@ public class VideoDecoderThread extends Thread {
                 extractIndex++;
                 videoDecoder.queueInputBuffer(decoderInputBufferIndex, 0, nextResult.getSize(), targetPts, nextResult.getFlag());
                 if (VERBOSE_LOOP_V)
-                    Log.d(Constants.TAG_V, caller() + extractLog("videoDecoder_queueInputBuffer_SurfaceTexture_getTimestamp", "ptsInFile:" + String.format("%,d", nextResult.getPtsInFile()) + ", targetPts:" + String.format("%,d", targetPts) + ", size:" + nextResult.getSize()));
+                    Log.d(EditConstants.TAG_V, caller() + extractLog("videoDecoder_queueInputBuffer_SurfaceTexture_getTimestamp", "ptsInFile:" + String.format("%,d", nextResult.getPtsInFile()) + ", targetPts:" + String.format("%,d", targetPts) + ", size:" + nextResult.getSize()));
                 inqueueState = InqueueState.inqueued;
                 if (seekState == SeekState.seekBegin) seekState = SeekState.seeking;
                 return inqueueState;
@@ -810,10 +810,10 @@ public class VideoDecoderThread extends Thread {
 
     private DequeueState dequeueAndRender() {
 
-        int decoderOutputBufferIndex = videoDecoder.dequeueOutputBuffer(videoDecoderOutputBufferInfo, Constants.TIMEOUT_USEC);
+        int decoderOutputBufferIndex = videoDecoder.dequeueOutputBuffer(videoDecoderOutputBufferInfo, EditConstants.TIMEOUT_USEC);
         if (decoderOutputBufferIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
             if (VERBOSE_LOOP_V) {
-                Log.d(Constants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "INFO_TRY_AGAIN_LATER_no video decoder output buffer"));
+                Log.d(EditConstants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "INFO_TRY_AGAIN_LATER_no video decoder output buffer"));
             }
             dequeueState = DequeueState.tryAgain;
             return dequeueState;
@@ -821,14 +821,14 @@ public class VideoDecoderThread extends Thread {
         if (decoderOutputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
 //            videoDecoderInputBuffers = videoDecoder.getInputBuffers();
             if (VERBOSE_LOOP_V) {
-                Log.d(Constants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "INFO_OUTPUT_BUFFERS_CHANGED"));
+                Log.d(EditConstants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "INFO_OUTPUT_BUFFERS_CHANGED"));
             }
             dequeueState = DequeueState.tryAgain;
             return dequeueState;
         }
         if (decoderOutputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
             if (VERBOSE_LOOP_V) {
-                Log.d(Constants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "INFO_OUTPUT_FORMAT_CHANGED"));
+                Log.d(EditConstants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "INFO_OUTPUT_FORMAT_CHANGED"));
             }
             dequeueState = DequeueState.tryAgain;
             return dequeueState;
@@ -836,7 +836,7 @@ public class VideoDecoderThread extends Thread {
         if ((videoDecoderOutputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
             videoDecoder.releaseOutputBuffer(decoderOutputBufferIndex, false);
             if (VERBOSE_LOOP_V) {
-                Log.d(Constants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "BUFFER_FLAG_CODEC_CONFIG"));
+                Log.d(EditConstants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result:", "BUFFER_FLAG_CODEC_CONFIG"));
             }
             dequeueState = DequeueState.tryAgain;
             return dequeueState;
@@ -845,7 +845,7 @@ public class VideoDecoderThread extends Thread {
         //当前segment解码结束
         if ((videoDecoderOutputBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
             if (VERBOSE_V) {
-                Log.d(Constants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result_eos", "decoder_EOS BUFFER_FLAG_END_OF_STREAM"));
+                Log.d(EditConstants.TAG_V, caller() + dequeueLog("dequeueOutputBuffer_result_eos", "decoder_EOS BUFFER_FLAG_END_OF_STREAM"));
             }
             videoDecoder.releaseOutputBuffer(decoderOutputBufferIndex, true);
             dequeueState = DequeueState.segEos;
@@ -860,7 +860,7 @@ public class VideoDecoderThread extends Thread {
         }
         if (videoDecoderOutputBufferInfo.size <= 0) {
             if (VERBOSE_V) {
-                Log.d(Constants.TAG_V, dequeueLog("dequeueOutputBuffer_result_eos2", "decoder_EOS , buffersize<=0"));
+                Log.d(EditConstants.TAG_V, dequeueLog("dequeueOutputBuffer_result_eos2", "decoder_EOS , buffersize<=0"));
             }
             videoDecoder.releaseOutputBuffer(decoderOutputBufferIndex, true);
             dequeueState = DequeueState.segEos;
@@ -879,20 +879,20 @@ public class VideoDecoderThread extends Thread {
             try {
                 sleep(10);
                 if (VERBOSE_LOOP_V)
-                    Log.d(Constants.TAG_V, caller() + dequeueLog("DISPLAY_sleep_10", "lastDecodPts:" + String.format("%,d", lastDecodPts) + "\tvideoTimer.getCurrentTimeMs:" + String.format("%,d", videoTimer.getCurrentTimeMs())));
+                    Log.d(EditConstants.TAG_V, caller() + dequeueLog("DISPLAY_sleep_10", "lastDecodPts:" + String.format("%,d", lastDecodPts) + "\tvideoTimer.getCurrentTimeMs:" + String.format("%,d", videoTimer.getCurrentTimeMs())));
             } catch (InterruptedException e) {
                 Log.w(TAG_V, dequeueLog("DISPLAY_sleep_10", "error:" + e.getMessage()), e);
                 break;
             }
         }
         if (VERBOSE_LOOP_V)
-            Log.d(Constants.TAG_V, caller() + dequeueLog("decoder_render_SurfaceTexture_getTimestamp", CodecUtils.toString(videoDecoderOutputBufferInfo)));
+            Log.d(EditConstants.TAG_V, caller() + dequeueLog("decoder_render_SurfaceTexture_getTimestamp", CodecUtils.toString(videoDecoderOutputBufferInfo)));
         VideoSegment segment = mediaTrack.getSegmentByUs(lastDecodPts);
         decoderCallBack.onFrameArrive(this, mediaTrack, segment, decodecIndex, lastDecodPts);
         videoDecoder.releaseOutputBuffer(decoderOutputBufferIndex, true);
 
         if (VERBOSE_LOOP_V && videoTimer != null)
-            Log.d(Constants.TAG_V, caller() + dequeueLog("DISPLAY_render_releaseOutputBuffer", "lastDecodPts:" + String.format("%,d", lastDecodPts) + "\t" + String.format("%,d", videoTimer.getCurrentTimeMs())));
+            Log.d(EditConstants.TAG_V, caller() + dequeueLog("DISPLAY_render_releaseOutputBuffer", "lastDecodPts:" + String.format("%,d", lastDecodPts) + "\t" + String.format("%,d", videoTimer.getCurrentTimeMs())));
 
         dequeueState = DequeueState.render;
         if (seekState == SeekState.seeking) {
@@ -910,7 +910,7 @@ public class VideoDecoderThread extends Thread {
             targetPts = 0;
         }
         if (VERBOSE_LOOP_V)
-            Log.d(Constants.TAG_V, caller() + dequeueLog("computePresentationTimeNsec", "targetPts:" + String.format("%,d", targetPts) + "\t:ptsInFile:" + String.format("%,d", ptsInFile)) + String.format("reduceSize: %f", segment.getScale()) + "\t" + segment.toString());
+            Log.d(EditConstants.TAG_V, caller() + dequeueLog("computePresentationTimeNsec", "targetPts:" + String.format("%,d", targetPts) + "\t:ptsInFile:" + String.format("%,d", ptsInFile)) + String.format("reduceSize: %f", segment.getScale()) + "\t" + segment.toString());
 
         return targetPts;
     }

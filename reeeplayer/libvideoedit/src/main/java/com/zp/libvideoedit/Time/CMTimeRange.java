@@ -3,7 +3,7 @@ package com.zp.libvideoedit.Time;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.utils.StrUtils;
 
 import java.io.Serializable;
@@ -61,8 +61,8 @@ public class CMTimeRange implements Serializable {
     }
 
     public CMTimeRange(double startTime, double duration) {
-        this.startTime = new CMTime(startTime, Constants.US_MUTIPLE);
-        this.duration = new CMTime(duration, Constants.US_MUTIPLE);
+        this.startTime = new CMTime(startTime, EditConstants.US_MUTIPLE);
+        this.duration = new CMTime(duration, EditConstants.US_MUTIPLE);
     }
 
     public static CMTimeRange RangeFromTimeToTime(CMTime time, CMTime endTime) {

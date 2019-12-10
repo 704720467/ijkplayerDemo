@@ -2,7 +2,6 @@ package cn.reee.reeeplayer;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -10,7 +9,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -27,31 +25,16 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.reee.reeeplayer.application.Settings;
 import cn.reee.reeeplayer.base.BaseActivity;
 import cn.reee.reeeplayer.content.RecentMediaStorage;
 import cn.reee.reeeplayer.util.ProgressDialogUtil;
-import cn.reee.reeeplayer.view.dialog.DelayLoadingDialogManager;
 import cn.reee.reeeplayer.widget.media.AndroidMediaController;
 import cn.reee.reeeplayer.widget.media.IjkVideoView;
 import cn.reee.reeeplayer.widget.media.MeasureHelper;
 import cn.reee.reeeplayer.widget.preference.ReeeGetImp;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
-
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.Permission;
-import com.zp.libvideoedit.Transcoder.Transcoder;
-import com.zp.libvideoedit.utils.FileUtils;
-import com.zp.libvideoedit.utils.LogUtil;
-import com.zp.libvideoedit.utils.MediaUtils;
-import com.zp.libvideoedit.utils.ToastUtil;
-
-import static com.zp.libvideoedit.Constants.VERBOSE;
 
 
 public class MainActivity extends BaseActivity implements TracksFragment.ITrackHolder, ReeeGetImp {

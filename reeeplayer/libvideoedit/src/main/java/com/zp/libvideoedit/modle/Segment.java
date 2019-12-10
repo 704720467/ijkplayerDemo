@@ -10,7 +10,7 @@ import com.zp.libvideoedit.utils.FormatUtils;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.zp.libvideoedit.Constants.MAX_TIME_DIFF_SEC;
+import static com.zp.libvideoedit.EditConstants.MAX_TIME_DIFF_SEC;
 
 
 /**

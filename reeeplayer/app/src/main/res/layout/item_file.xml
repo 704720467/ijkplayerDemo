@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="1px" />
+
+    <TextView
+        android:id="@+id/tv_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="1px"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="32px"
+        android:layout_height="32px"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="5px"
+        android:layout_marginRight="5px"
+        android:background="@drawable/bg_round_layout_cc000000"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="10sp" />
+</cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

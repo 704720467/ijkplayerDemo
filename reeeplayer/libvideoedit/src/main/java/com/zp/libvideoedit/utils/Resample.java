@@ -2,11 +2,11 @@ package com.zp.libvideoedit.utils;
 
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.EditCore.AudioDataPacket;
 
-import static com.zp.libvideoedit.Constants.TAG_A_MIX;
-import static com.zp.libvideoedit.Constants.VERBOSE_A_MIX;
+import static com.zp.libvideoedit.EditConstants.TAG_A_MIX;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_A_MIX;
 
 
 /**
@@ -41,7 +41,7 @@ public class Resample {
     //设置开始解码pts
     private native void native_Audio_Seek(long pts, long mVNIFFmpegId);
 
-    final private int channelCount = Constants.DEFAULT_AUDIO_CHANNEL_COUNT;//2
+    final private int channelCount = EditConstants.DEFAULT_AUDIO_CHANNEL_COUNT;//2
     /**
      * resample后的音频采样率
      */

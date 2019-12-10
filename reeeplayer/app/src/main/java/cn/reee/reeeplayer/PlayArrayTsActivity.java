@@ -6,10 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.zp.libvideoedit.Constants;
 import com.zp.libvideoedit.EditCore.VideoPlayer;
 import com.zp.libvideoedit.Time.CMTime;
-import com.zp.libvideoedit.Time.CMTimeRange;
 import com.zp.libvideoedit.VideoEditUtils;
 import com.zp.libvideoedit.VideoEffect;
 import com.zp.libvideoedit.WidthHeightRatioGlSurfaceView;
@@ -17,7 +15,6 @@ import com.zp.libvideoedit.exceptions.InvalidVideoSourceException;
 import com.zp.libvideoedit.modle.AudioFile;
 import com.zp.libvideoedit.modle.BuildType;
 import com.zp.libvideoedit.modle.MediaComposition;
-import com.zp.libvideoedit.modle.Transition.Origentation;
 import com.zp.libvideoedit.modle.VideoBean;
 import com.zp.libvideoedit.modle.VideoFile;
 import com.zp.libvideoedit.modle.VideoPlayerCallBack;
@@ -28,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 import cn.reee.reeeplayer.base.BaseActivity;
 import cn.reee.reeeplayer.util.ScreenUtil;
@@ -38,9 +34,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.zp.libvideoedit.Constants.TAG_V;
-import static com.zp.libvideoedit.Constants.VERBOSE_SEEK;
-import static com.zp.libvideoedit.Constants.VERBOSE_V;
+import static com.zp.libvideoedit.EditConstants.TAG_V;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_SEEK;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_V;
 
 public class PlayArrayTsActivity extends BaseActivity {
     WidthHeightRatioGlSurfaceView playerview;

@@ -15,7 +15,7 @@ import android.util.Log;
 import android.view.Surface;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.Effect.VNiImageFilter;
 import com.zp.libvideoedit.GPUImage.Carma.Core.GPUSurfaceCameraView;
 import com.zp.libvideoedit.GPUImage.Carma.utils.EGLBase;
@@ -69,13 +69,13 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_V;
-import static com.zp.libvideoedit.Constants.VERBOSE;
-import static com.zp.libvideoedit.Constants.VERBOSE_LOOP_V;
-import static com.zp.libvideoedit.Constants.VERBOSE_SEEK;
-import static com.zp.libvideoedit.Constants.VERBOSE_V;
-import static com.zp.libvideoedit.Constants.VIDEO_PRE_START_TIME;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_V;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_LOOP_V;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_SEEK;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_V;
+import static com.zp.libvideoedit.EditConstants.VIDEO_PRE_START_TIME;
 import static com.zp.libvideoedit.modle.MediaType.MEDIA_TYPE_Video;
 import static com.zp.libvideoedit.modle.TrackType.TrackType_Video_Main;
 import static com.zp.libvideoedit.modle.TrackType.TrackType_Video_Mask;
@@ -390,20 +390,20 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
                 Log.d(TAG_V, Thread.currentThread().getName() + "onFrameAvailable: hasVaildData :" + surfaceTexture);
             if (firstMediatrack != null && surfaceTexture == firstMediatrack.getSurfaceTexture()) {
                 if (VERBOSE_LOOP_V) {
-                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频第一路:" + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频第一路:" + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
                 }
                 hasFistAvailableData = true;
             }
             if (secondMediaTrack != null && surfaceTexture == secondMediaTrack.getSurfaceTexture()) {
                 if (VERBOSE_LOOP_V) {
-                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频第二路:" + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频第二路:" + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
                 }
                 hasSecondAvailableData = true;
             }
             if (transitionMediaTrack != null && surfaceTexture == transitionMediaTrack.getSurfaceTexture()) {
                 hasTransitionAvailableData = true;
                 if (VERBOSE_LOOP_V) {
-                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频 Transition " + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频 Transition " + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
                 }
             }
             requestRender();
@@ -414,14 +414,14 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
         public void onFrameAvailable(SurfaceTexture surfaceTexture) {
             if (maskExtMediaTrack != null && surfaceTexture == maskExtMediaTrack.getSurfaceTexture()) {
                 if (VERBOSE_LOOP_V) {
-                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频maskExt:" + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频maskExt:" + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
                 }
                 hasBlendExtAvailableData = true;
             }
             if (maskMediaTrack != null && surfaceTexture == maskMediaTrack.getSurfaceTexture()) {
                 hasBlendAvailableData = true;
                 if (VERBOSE_LOOP_V) {
-                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频mask:" + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                    Log.d(TAG_V, Thread.currentThread().getName() + "_onFrameAvailable: 视频mask:" + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
                 }
             }
             requestRender();
@@ -713,9 +713,9 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
             }
 
         }
-        currentTime = new CMTime(currentTimeStamp, Constants.NS_MUTIPLE);
+        currentTime = new CMTime(currentTimeStamp, EditConstants.NS_MUTIPLE);
         //判断chunk
-        float second = currentTimeStamp / (1.0f * Constants.NS_MUTIPLE);
+        float second = currentTimeStamp / (1.0f * EditConstants.NS_MUTIPLE);
         if (VERBOSE_LOOP_V) Log.d("renderRender", "on draw frame " + second);
         if (videoEffect == null) {
             return;
@@ -789,7 +789,7 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
                 firstVideoinputFilter.setViewportRange(chunk.getmViewportRange());
                 firstVideoinputFilter.onDrawToTexture(texture, currentTimeStamp);
                 if (VERBOSE_V)
-                    Log.w(TAG, "onDrawFrame————" + "第一路视频渲染" + currentTimeStamp / (1.0 * Constants.NS_MUTIPLE));
+                    Log.w(TAG, "onDrawFrame————" + "第一路视频渲染" + currentTimeStamp / (1.0 * EditConstants.NS_MUTIPLE));
 
             }
             if (!firstPicture) {
@@ -867,7 +867,7 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
                 secondVideoinputFilter.setViewportRange(chunk.getmViewportRange());
                 secondVideoinputFilter.onDrawToTexture(texture, currentTimeStamp);
                 if (VERBOSE_V)
-                    Log.w(TAG, "onDrawFrame————" + "第二路视频渲染" + currentTimeStamp / (1.0 * Constants.NS_MUTIPLE));
+                    Log.w(TAG, "onDrawFrame————" + "第二路视频渲染" + currentTimeStamp / (1.0 * EditConstants.NS_MUTIPLE));
 
             }
             hasSecondAvailableData = false;
@@ -1102,12 +1102,12 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
 //                    int transitionTexture = transitionMediaTrack.getSurfaceTextrureid();
 //                    transitionMediaTrack.getSurfaceTexture().updateTexImage();
 //                    transitionVideoinputFilter.onDrawToTexture(transitionTexture, currentTimeStamp);
-//                    if (Constants.VERBOSE_V)
-//                        Log.w(Constants.TAG, "onDrawFrame————" + "转场视频渲染" + currentTimeStamp / (1.0 * Constants.NS_MUTIPLE));
+//                    if (EditConstants.VERBOSE_V)
+//                        Log.w(EditConstants.TAG, "onDrawFrame————" + "转场视频渲染" + currentTimeStamp / (1.0 * EditConstants.NS_MUTIPLE));
 //
 //                } else {
-//                    if (Constants.VERBOSE_V)
-//                        Log.w(Constants.TAG, "onDrawFrame————" + "转场filter没有draw" + currentTimeStamp / (1.0 * Constants.NS_MUTIPLE));
+//                    if (EditConstants.VERBOSE_V)
+//                        Log.w(EditConstants.TAG, "onDrawFrame————" + "转场filter没有draw" + currentTimeStamp / (1.0 * EditConstants.NS_MUTIPLE));
 //
 //                }
 
@@ -1234,32 +1234,32 @@ public class VideoPlayerCoreManager implements GLSurfaceView.Renderer, VideoDeco
             Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: hasVaildData :" + surfaceTexture);
         if (firstMediatrack != null && surfaceTexture == firstMediatrack.getSurfaceTexture()) {
             if (VERBOSE_LOOP_V) {
-                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频第一路: " + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频第一路: " + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
             }
             hasFistAvailableData = true;
         }
         if (secondMediaTrack != null && surfaceTexture == secondMediaTrack.getSurfaceTexture()) {
             if (VERBOSE_LOOP_V) {
-                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频第二路: " + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频第二路: " + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
             }
             hasSecondAvailableData = true;
         }
         if (maskExtMediaTrack != null && surfaceTexture == maskExtMediaTrack.getSurfaceTexture()) {
             if (VERBOSE_LOOP_V) {
-                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频maskExt: " + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频maskExt: " + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
             }
             hasBlendExtAvailableData = true;
         }
         if (maskMediaTrack != null && surfaceTexture == maskMediaTrack.getSurfaceTexture()) {
             hasBlendAvailableData = true;
             if (VERBOSE_LOOP_V) {
-                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频mask: " + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频mask: " + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
             }
         }
         if (transitionMediaTrack != null && surfaceTexture == transitionMediaTrack.getSurfaceTexture()) {
             hasTransitionAvailableData = true;
             if (VERBOSE_LOOP_V) {
-                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频 Transition: " + (surfaceTexture.getTimestamp() / 1.0 * Constants.NS_MUTIPLE));
+                Log.d(TAG_V, caller() + Thread.currentThread().getName() + "_onFrameAvailable: 视频 Transition: " + (surfaceTexture.getTimestamp() / 1.0 * EditConstants.NS_MUTIPLE));
             }
         }
         requestRender();

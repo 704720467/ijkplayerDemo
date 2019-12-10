@@ -38,7 +38,7 @@ import android.util.Log;
 import android.view.Surface;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.exceptions.EffectRuntimeException;
 
 import java.io.File;
@@ -51,10 +51,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_FE;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE_FE;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_FE;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_FE;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
 
 
@@ -276,7 +276,7 @@ public class FramesExtractor {
                     outputSurface.release();
                 }
             } catch (Exception e) {
-                Log.w(Constants.TAG, "FramesExtractor_extractFrames_relase outputSurface ", e);
+                Log.w(EditConstants.TAG, "FramesExtractor_extractFrames_relase outputSurface ", e);
             }
             try {
                 if (decoder != null) {
@@ -284,14 +284,14 @@ public class FramesExtractor {
                     decoder.release();
                 }
             } catch (Exception e) {
-                Log.w(Constants.TAG, "FramesExtractor_extractFrames_relase decoder ", e);
+                Log.w(EditConstants.TAG, "FramesExtractor_extractFrames_relase decoder ", e);
             }
             try {
                 if (extractor != null) {
                     extractor.release();
                 }
             } catch (Exception e) {
-                Log.w(Constants.TAG, "FramesExtractor_extractFrames_relase extractor ", e);
+                Log.w(EditConstants.TAG, "FramesExtractor_extractFrames_relase extractor ", e);
             }
             if (VERBOSE_FE) {
                 Log.d(TAG_FE, "FramesExtractor released codec stuff");

@@ -3,7 +3,7 @@ package com.zp.libvideoedit.GPUImage.Filter;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageTextureCoordinates;
 import com.zp.libvideoedit.GPUImage.Core.GPUSize;
@@ -80,10 +80,10 @@ public class VNiHorizontalVideoBlendFilter extends GPUImageTwoInput {
 
     @Override
     public void newFrameReadyAtTime(long frameTime, int textureIndex) {
-        if (Constants.VERBOSE_GL)
+        if (EditConstants.VERBOSE_GL)
             Log.d("GPUImageTwoInput", "newFrameReadyAtTime  ,textureIndex:  " + textureIndex);
         currentFrameIndex = frameTime;
-        currentTime = new CMTime(frameTime, Constants.NS_MUTIPLE);
+        currentTime = new CMTime(frameTime, EditConstants.NS_MUTIPLE);
         if (hasReceivedFirstFrame && hasReceivedSecondFrame) return;
         if (textureIndex == 0) {
             hasReceivedFirstFrame = true;
@@ -107,7 +107,7 @@ public class VNiHorizontalVideoBlendFilter extends GPUImageTwoInput {
 
     public void renderAtTime(long frameTime, int textureIndex) {
         currentFrameIndex = frameTime;
-        currentTime = new CMTime(frameTime, Constants.NS_MUTIPLE);
+        currentTime = new CMTime(frameTime, EditConstants.NS_MUTIPLE);
         this.renderToTextureWithVertices(GPUUtiles.directFloatBufferFromFloatArray(GPUImageTextureCoordinates.squareVertices), GPUUtiles.directFloatBufferFromFloatArray(GPUImageTextureCoordinates.textureCoordinates), frameTime);
         this.informTargetsAboutNewFrameAtTime(frameTime);
     }

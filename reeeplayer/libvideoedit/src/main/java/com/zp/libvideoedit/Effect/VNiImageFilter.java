@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.AndroidResourceManager;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageTextureCoordinates;
@@ -131,7 +131,7 @@ public class VNiImageFilter extends VNiLutFilter {
 
     public void addLut(String url) {
         Bitmap bitmap = null;
-        String path = Constants.TEMP_FILTER_PATH + "/" + url;
+        String path = EditConstants.TEMP_FILTER_PATH + "/" + url;
         if (new File(path).exists()) {
             bitmap = BitmapUtil.loadFileToBitmap(path);
         }

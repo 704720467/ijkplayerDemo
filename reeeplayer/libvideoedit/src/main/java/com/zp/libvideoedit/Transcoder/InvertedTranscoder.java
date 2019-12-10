@@ -17,7 +17,7 @@ import android.util.Size;
 
 import androidx.annotation.NonNull;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.Time.CMTime;
 import com.zp.libvideoedit.VideoEffect;
 import com.zp.libvideoedit.modle.VideoFile;
@@ -31,10 +31,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import static com.zp.libvideoedit.Constants.TAG_TR;
-import static com.zp.libvideoedit.Constants.TIMEOUT_USEC;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.TAG_TR;
+import static com.zp.libvideoedit.EditConstants.TIMEOUT_USEC;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 import static com.zp.libvideoedit.utils.CodecUtils.createExtractor;
 import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectVideoTrackIndex;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
@@ -389,7 +389,7 @@ public class InvertedTranscoder {
             fps = decoderInputVideoFormat.getInteger(MediaFormat.KEY_FRAME_RATE);
         else fps = Math.round(CodecUtils.detectFps(inPutFilePath));
         if (fps <= 0)
-            fps = Constants.DEFAULT_FPS;
+            fps = EditConstants.DEFAULT_FPS;
 
 
         width = decoderInputVideoFormat.getInteger(MediaFormat.KEY_WIDTH);
@@ -417,7 +417,7 @@ public class InvertedTranscoder {
         // 转为全关键帧视频，所有码率要大一些
         bitRate = CodecUtils.calcBitRate(width, height, fps, 2.f);
         if (bitRate > 60 * 1024 * 1024) bitRate = 60 * 1024 * 1024;
-        int totalFrame = (int) (fps * durationUs / Constants.US_MUTIPLE);
+        int totalFrame = (int) (fps * durationUs / EditConstants.US_MUTIPLE);
 
         if (countOfThumb > totalFrame && countOfThumb > 0) {
             throw new TranscodeRunTimeException("预览图过多,总共只有:" + totalFrame + "帧,却需要" + countOfThumb + "张图");

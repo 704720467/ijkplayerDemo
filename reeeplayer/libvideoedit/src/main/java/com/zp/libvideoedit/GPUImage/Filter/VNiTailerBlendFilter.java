@@ -4,7 +4,7 @@ import android.opengl.GLES20;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageTextureCoordinates;
 import com.zp.libvideoedit.GPUImage.Core.GPUUtiles;
@@ -109,14 +109,14 @@ public class VNiTailerBlendFilter extends GPUImageTwoInput {
         GLES20.glEnableVertexAttribArray(mfilterSecondTextureCoordinateAttribute);
         setTextureDefaultConfig();
         GLES20.glUniform1f(alphaSlot, calcAlpha());
-        if (Constants.VERBOSE_GL)
-            Log.d(Constants.TAG_GL, "VNiTailerBlendFilter_calcAlpha_alpha:  " + calcAlpha());
+        if (EditConstants.VERBOSE_GL)
+            Log.d(EditConstants.TAG_GL, "VNiTailerBlendFilter_calcAlpha_alpha:  " + calcAlpha());
         GLES20.glUniform1f(blureSlot, calcblure());
-        if (Constants.VERBOSE_GL)
-            Log.d(Constants.TAG_GL, "VNiTailerBlendFilter_calcblure_blure :  " + calcblure());
+        if (EditConstants.VERBOSE_GL)
+            Log.d(EditConstants.TAG_GL, "VNiTailerBlendFilter_calcblure_blure :  " + calcblure());
         GLES20.glUniform1f(bgAlphaSlot, calcBgAlpha());
-        if (Constants.VERBOSE_GL)
-            Log.d(Constants.TAG_GL, "VNiTailerBlendFilter_calcBgAlpha_alpha:  " + calcBgAlpha());
+        if (EditConstants.VERBOSE_GL)
+            Log.d(EditConstants.TAG_GL, "VNiTailerBlendFilter_calcBgAlpha_alpha:  " + calcBgAlpha());
         if (mFirstInputFramebuffer != null) {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE2);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mFirstInputFramebuffer.getTexture());

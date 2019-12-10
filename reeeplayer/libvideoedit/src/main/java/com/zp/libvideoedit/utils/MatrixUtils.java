@@ -3,7 +3,7 @@ package com.zp.libvideoedit.utils;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPURect;
 import com.zp.libvideoedit.GPUImage.Core.GPUSize;
 import com.zp.libvideoedit.modle.ViewportRange;
@@ -73,7 +73,7 @@ public class MatrixUtils {
     }
 
     public static GPUSize SizeApplyAffineTransform2D(GPUSize size, Matrix4f matrix) {
-        if (Constants.VERBOSE_GL)
+        if (EditConstants.VERBOSE_GL)
             Log.d(MatrixUtils.TAG, "size = " + size.width + "  " + size.height + "  " + matrix);
         float a = matrix.get(0, 0);
         float b = matrix.get(0, 1);

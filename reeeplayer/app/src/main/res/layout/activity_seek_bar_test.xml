@@ -8,26 +8,26 @@
     tools:context=".SeekBarTestActivity">
 
     <!--<cn.reee.reeeplayer.view.seekBar.ReeeSeekBar-->
-        <!--android:id="@+id/seek_bar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="200px"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:background="#9a000000" />-->
+    <!--android:id="@+id/seek_bar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="200px"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:background="#9a000000" />-->
 
     <!--<cn.reee.reeeplayer.view.seekBar.CutSeekBar-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="112px"-->
-        <!--android:layout_below="@+id/seek_bar"-->
-        <!--android:layout_marginTop="100px" />-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="112px"-->
+    <!--android:layout_below="@+id/seek_bar"-->
+    <!--android:layout_marginTop="100px" />-->
 
     <!--<cn.reee.reeeplayer.view.ChangeDateAndStadium-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical" />-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical" />-->
 
-    <cn.reee.reeeplayer.view.GetPreviewLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!--  <cn.reee.reeeplayer.view.GetPreviewLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />-->
     <!--<include layout="@layout/change_date_and_stadium_layout" />-->
 
     <!--<LinearLayout-->
@@ -47,4 +47,9 @@
     <!--</ScrollView>-->
     <!--</LinearLayout>-->
 
+    <cn.reee.reeeplayer.view.CutScrollLayout.KLScrollLayout
+        android:layout_width="match_parent"
+        android:layout_height="300px"
+        android:layout_centerInParent="true"
+        android:background="#026896" />
 </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

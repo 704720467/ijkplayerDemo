@@ -3,7 +3,7 @@ package com.zp.libvideoedit.GPUImage.FilterCore;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.Time.CMTime;
 
@@ -63,7 +63,7 @@ public class VNITailBureFilter extends GPUImageFilter {
         GLES20.glEnableVertexAttribArray(mFilterTextureCoordinateAttribute);
         setTextureDefaultConfig();
         float blureValue = calcBurleValue();
-        if (Constants.VERBOSE_GL)
+        if (EditConstants.VERBOSE_GL)
             Log.d(this.getClass().getSimpleName(), "VNITailBureFilter_Ondraw_renderToTextureWithVertices" + "blureValue:  " + blureValue);
         GLES20.glUniform1f(blureSlot, blureValue);
         if (mFirstInputFramebuffer != null) {

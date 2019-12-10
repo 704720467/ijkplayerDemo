@@ -13,7 +13,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.Time.CMTime;
 import com.zp.libvideoedit.exceptions.InvalidVideoSourceException;
 import com.zp.libvideoedit.utils.CodecUtils;
@@ -21,10 +21,10 @@ import com.zp.libvideoedit.utils.MediaUtils;
 
 import java.nio.ByteBuffer;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.VERBOSE;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
-import static com.zp.libvideoedit.Constants.VERBOSE_V;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_V;
 
 
 public class VideoFile {
@@ -141,7 +141,7 @@ public class VideoFile {
                 MediaUtils.getInstance(context).setDataSource(retr, path);
                 try {
                     if (videoFormat.containsKey(MediaFormat.KEY_DURATION))
-                        duration = ((float) videoFormat.getLong(MediaFormat.KEY_DURATION)) / Constants.US_MUTIPLE;
+                        duration = ((float) videoFormat.getLong(MediaFormat.KEY_DURATION)) / EditConstants.US_MUTIPLE;
                     else {
                         String durationStr = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                         duration = Integer.valueOf(durationStr) * 1.0f / 1000.0f;
@@ -235,7 +235,7 @@ public class VideoFile {
             int readedCount = 0;
             long firstKeyFramePts = -1;
             long secKeyFramePts = -1;
-            while (readedCount < Constants.ACCECPT_VIDEO_MAX_GOP) {
+            while (readedCount < EditConstants.ACCECPT_VIDEO_MAX_GOP) {
                 ByteBuffer inputBuf = ByteBuffer.allocate(1024 * 1024);
                 inputBuf.clear();
                 int size = extractor.readSampleData(inputBuf, 0);
@@ -259,10 +259,10 @@ public class VideoFile {
                             firstKeyFramePts = pts;
                         } else if (secKeyFramePts == -1) {
                             secKeyFramePts = pts;
-                            keyFrameInterval = ((float) (secKeyFramePts - firstKeyFramePts)) / Constants.US_MUTIPLE;
+                            keyFrameInterval = ((float) (secKeyFramePts - firstKeyFramePts)) / EditConstants.US_MUTIPLE;
 
                             // computeFps
-                            fps = ((float) readedCount) / (lastPts - firstPts) * Constants.US_MUTIPLE;
+                            fps = ((float) readedCount) / (lastPts - firstPts) * EditConstants.US_MUTIPLE;
 
                             Log.w(TAG, "VideoFile_extractorMetaData finished. fps: " + fps + ", keyFrameInterval " + keyFrameInterval);
                             return new Pair<Float, Float>(fps, keyFrameInterval);

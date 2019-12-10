@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.zp.libvideoedit.Constants.TAG_TR;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.TAG_TR;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectAudioTrackIndex;
 import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectVideoTrackIndex;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;

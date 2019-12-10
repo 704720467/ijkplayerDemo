@@ -37,5 +37,14 @@
         android:layout_toRightOf="@+id/bt_init"
         android:text="PLAY" />
 
+    <FrameLayout
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:layout_below="@+id/playerview"
+        android:layout_centerHorizontal="true">
 
+        <cn.reee.reeeplayer.view.SquareProgressBar2
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

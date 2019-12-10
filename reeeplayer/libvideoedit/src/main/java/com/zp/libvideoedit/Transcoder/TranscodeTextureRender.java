@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import static com.zp.libvideoedit.Constants.GL_DEBUG;
+import static com.zp.libvideoedit.EditConstants.GL_DEBUG;
 
 
 /**

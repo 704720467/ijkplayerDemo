@@ -5,7 +5,7 @@ import android.media.MediaFormat;
 import android.util.Log;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.Time.CMTime;
 import com.zp.libvideoedit.modle.ExtractResult;
 import com.zp.libvideoedit.modle.ExtractState;
@@ -20,9 +20,9 @@ import com.zp.libvideoedit.utils.MediaUtils;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import static com.zp.libvideoedit.Constants.TAG_V;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VIDEO_PRE_START_TIME;
+import static com.zp.libvideoedit.EditConstants.TAG_V;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VIDEO_PRE_START_TIME;
 import static com.zp.libvideoedit.modle.ExtractState.empty;
 import static com.zp.libvideoedit.modle.ExtractState.hasNext;
 import static com.zp.libvideoedit.modle.ExtractState.segBegin;
@@ -68,7 +68,7 @@ public class VideoTrackExtractor {
     }
 
     public HasNextResult hasNext() {
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("hasNext_before", "pts:" + String.format("%,d", pts) + ",  extractor:" + extractor + ", seeking:" + seeking + ", waking:" + waking + ", lastSegment:" + lastSegment));
         long hasNextPts = pts;
         if (hasNextPts < 0) {
@@ -95,7 +95,7 @@ public class VideoTrackExtractor {
                 hasNextPts = pts;
                 state = hasNext;
             }
-            if (Constants.VERBOSE_LOOP_V)
+            if (EditConstants.VERBOSE_LOOP_V)
                 Log.d(TAG_V, "用于seek后在最后的时间内唤起别的解码线程，nextPts=" + nextPts + ",hasNextPts="
                         + hasNextPts + ",state=" + state + ",segmentNext=" + segmentNext);
             if (hasNextPts >= track.getDuration().getUs())
@@ -123,7 +123,7 @@ public class VideoTrackExtractor {
             CMTime startTime = segment.getTimeMapping().getSourceTimeRange().getStartTime();
             CMTime endTime = lastSegment.getTimeMapping().getSourceTimeRange().getEnd();
             boolean canToseek = (CMTime.subTime(startTime, endTime).getUs() > 0.5 * US_MUTIPLE);
-            if (Constants.VERBOSE_LOOP_V)
+            if (EditConstants.VERBOSE_LOOP_V)
                 Log.d(TAG_V, "======segment=" + segment + ";lastSegment=" + lastSegment
                         + ";startTime=" + startTime
                         + ";endTime=" + endTime
@@ -143,7 +143,7 @@ public class VideoTrackExtractor {
                     }
 
                     long ptsInFile = extractor.getSampleTime();
-                    if (Constants.VERBOSE_LOOP_V)
+                    if (EditConstants.VERBOSE_LOOP_V)
                         Log.d(TAG_V, logString("hasNext_extractor_seekTox", "scrMs:" + String.format("%,d_%d", scrUs, extractor.getCachedDuration()) + ",ptsInFile:" + String.format("%,d", ptsInFile) + ", hasNextPts:" + String.format("%,d", hasNextPts) + ",\textractor:" + extractor + ", seeking:" + seeking + ", waking:" + waking + "\tcurrentSegment:" + segment + "\tlastSegment:" + lastSegment));
                 }
                 state = hasNext;
@@ -152,24 +152,24 @@ public class VideoTrackExtractor {
                     createExtractorCount = 0;
                     createExtractor(segment, hasNextPts);
                     long ptsInFile = extractor.getSampleTime();
-                    if (Constants.VERBOSE_LOOP_V)
+                    if (EditConstants.VERBOSE_LOOP_V)
                         Log.d(TAG_V, logString("hasNext_extractor_seekTo2", "scrMs:" + String.format("%,d", hasNextPts) + ",ptsInFile:" + String.format("%,d", ptsInFile) + ", pts:" + String.format("%,d", hasNextPts) + ",\textractor:" + extractor + ", seeking:" + seeking + ", waking:" + waking + "\tcurrentSegment:" + segment + "\tlastSegment:" + lastSegment));
 
                     state = segBegin;
                 } else {
                     //should never happen
                     state = segBegin;
-                    if (Constants.VERBOSE_LOOP_V)
+                    if (EditConstants.VERBOSE_LOOP_V)
                         Log.d(TAG_V, logString("hasNext_extractor_seekTo_neverHappen", "scrMs:" + String.format("%,d", hasNextPts) + ",\textractor:" + extractor + ", seeking:" + seeking + ", waking:" + waking + "\tcurrentSegment:" + segment + "\tlastSegment:" + lastSegment));
                 }
             }
 
         }
 
-        if (Constants.VERBOSE_LOOP_V) {
+        if (EditConstants.VERBOSE_LOOP_V) {
             String lastSegmentId = lastSegment != null ? lastSegment.getSegmentId() : "x";
             String currentSegmentId = segment != null ? segment.getSegmentId() : "x";
-            if (Constants.VERBOSE_LOOP_V)
+            if (EditConstants.VERBOSE_LOOP_V)
                 Log.d(TAG_V, logString("hasNext_result", "state:" + state + ", pts:" + String.format("%,d", hasNextPts) + ",\textractor:" + extractor + ", seeking:" + seeking + ", waking:" + waking + ", lastSegId:" + lastSegmentId + ",currentSegId" + ";" + currentSegmentId + "\tcurrentSegment:" + segment + "\tlastSegment:" + lastSegment));
         }
 
@@ -180,7 +180,7 @@ public class VideoTrackExtractor {
             waking = false;
             return new HasNextResult(state, hasNextPts, segment);
         } else {
-            if (Constants.VERBOSE_LOOP_V)
+            if (EditConstants.VERBOSE_LOOP_V)
                 Log.d(TAG_V, logString("hasNext_result", "pts 异常回调~hasNextPts=" + hasNextPts + ";pts=" + pts));
             return hasNext();
         }
@@ -191,13 +191,13 @@ public class VideoTrackExtractor {
 
     public ExtractResult next(ByteBuffer byteBuffer, int offset) {
         if (extractor == null || needTryTimes != 0) {
-            if (Constants.VERBOSE_LOOP_V)
+            if (EditConstants.VERBOSE_LOOP_V)
                 Log.w(TAG_V, "VideoTrackExtractor next createExtractor!");
             createExtractor(lastSegment, pts);
         }
 //        needTryTimes++;
         int size = extractor.readSampleData(byteBuffer, offset);
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("next_size", "nextPts:" + String.format("%,d", pts)
                     + ", size:" + size + ", lastSegment:" + lastSegment));
 
@@ -207,7 +207,7 @@ public class VideoTrackExtractor {
 
 
         ExtractResult extractResult = new ExtractResult(lastSegment, size, flag, ptsInFile);
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("next_next_begin", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + ptsInFile + ", targetPts:" + targetPts + ",flag:" + String.format("%,d", flag) + ", lastSegment:" + lastSegment));
 
 
@@ -222,7 +222,7 @@ public class VideoTrackExtractor {
 //            doWhileTimes++;
 //            boolean advanceResultTemp = extractor.advance();
 //            long nextPtsInFileTemp = extractor.getSampleTime();
-//            if (Constants.VERBOSE_LOOP_V)
+//            if (EditConstants.VERBOSE_LOOP_V)
 //                Log.d(TAG_V, logString("next_next_next_start", "nextPts:" + String.format("%,d", pts)
 //                        + ", nextPtsInFile:" + nextPtsInFile + ", advanceResult:" + advanceResult)
 //                        + ", nextPtsInFileTemp:" + nextPtsInFileTemp + ", advanceResultTemp:" + advanceResult
@@ -231,14 +231,14 @@ public class VideoTrackExtractor {
 //            if (nextPtsInFileTemp > 0 && nextPtsInFileTemp <= segmentEndTime) {//成功找到可继续渲染的帧
 //                advanceResult = advanceResultTemp;
 //                nextPtsInFile = nextPtsInFileTemp;
-//                if (Constants.VERBOSE_LOOP_V)
+//                if (EditConstants.VERBOSE_LOOP_V)
 //                    Log.d(TAG_V, logString("next_next_next_find", "nextPts:" + String.format("%,d", pts)
 //                            + ", nextPtsInFile:" + nextPtsInFile + ", advanceResult:" + advanceResult)
 //                            + ", nextPtsInFileTemp:" + nextPtsInFileTemp + ", advanceResultTemp:" + advanceResult);
 //                break;
 //            }
 //            if (nextPtsInFileTemp > segmentEndTime || doWhileTimes > 10) {//没有找到正确的帧
-//                if (Constants.VERBOSE_LOOP_V)
+//                if (EditConstants.VERBOSE_LOOP_V)
 //                    Log.d(TAG_V, logString("next_next_next_stop", "nextPts:" + String.format("%,d", pts)
 //                            + ", nextPtsInFile:" + nextPtsInFile + ", advanceResult:" + advanceResult)
 //                            + ", nextPtsInFileTemp:" + nextPtsInFileTemp + ", advanceResultTemp:" + advanceResult
@@ -250,7 +250,7 @@ public class VideoTrackExtractor {
 //        }
 
         if (nextPtsInFile < 0) {
-            if (Constants.VERBOSE_LOOP_V)
+            if (EditConstants.VERBOSE_LOOP_V)
                 Log.d(TAG_V, logString("next_next_no", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + nextPtsInFile + ", advanceResult:" + advanceResult));
             advanceResult = false;
         }
@@ -260,11 +260,11 @@ public class VideoTrackExtractor {
         } else this.pts = -2;
 
 
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("next_next_has", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + nextPtsInFile + ", advanceResult：" + advanceResult));
 
 
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("next_result", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + nextPtsInFile + ", " + extractResult.toString()));
         needTryTimes = 0;
         return extractResult;
@@ -291,23 +291,23 @@ public class VideoTrackExtractor {
 
 
         ExtractResult extractResult = new ExtractResult(lastSegment, size, flag, ptsInFile);
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("seekNext_next_begin", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + ptsInFile + ", targetPts" + targetPts + ",flag:" + String.format("%,d", flag) + ", lastSegment:" + lastSegment));
 
         boolean advanceResult = extractor.advance();
         long nextPtsInFile = extractor.getSampleTime();
         if (nextPtsInFile < 0) {
 
-            if (Constants.VERBOSE_LOOP_V)
+            if (EditConstants.VERBOSE_LOOP_V)
                 Log.d(TAG_V, logString("seekNext_next_no", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + nextPtsInFile + ", advanceResult:" + advanceResult));
             advanceResult = false;
         }
 
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("seekNext_next_has", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + nextPtsInFile + ", advanceResult" + advanceResult));
 
 
-        if (Constants.VERBOSE_LOOP_V)
+        if (EditConstants.VERBOSE_LOOP_V)
             Log.d(TAG_V, logString("seekNext_result", "nextPts:" + String.format("%,d", pts) + ", nextPtsInFile:" + nextPtsInFile + ", " + extractResult.toString()));
 
         return extractResult;
@@ -319,7 +319,7 @@ public class VideoTrackExtractor {
         MediaFormat mediaFormat = null;
         if (lastSegment != null) {
             mediaFormat = lastSegment.getVideoFile().getVideoFormat();
-            if (Constants.VERBOSE_V)
+            if (EditConstants.VERBOSE_V)
                 Log.d(TAG_V, logString("getInputMediaFormat:", mediaFormat.toString()));
         }
         if (mediaFormat == null) {
@@ -338,7 +338,7 @@ public class VideoTrackExtractor {
             CodecUtils.getAndSelectVideoTrackIndex(extractor);
 
             long scrMs = segment.getSrcUs(targetMs);
-            if (Constants.VERBOSE_V)
+            if (EditConstants.VERBOSE_V)
                 Log.d(TAG_V, logString("createExtractor:", String.format("scrMs:%,d,targetMs:%d ", scrMs, targetMs)));
             extractor.seekTo(scrMs, MediaExtractor.SEEK_TO_NEXT_SYNC);
             return extractor;
@@ -347,7 +347,7 @@ public class VideoTrackExtractor {
 
 //            if (flag == -1 && ptsInFile == -1) {
 //                if (createExtractorCount > mCreateExtractorMaxCount) {
-//                    if (Constants.VERBOSE_V)
+//                    if (EditConstants.VERBOSE_V)
 //                        Log.d(TAG_V, logString("createExtractor:", "重新创建_MediaExtractor 已经达到最大值！:targetMs=" + targetMs + ";createExtractorCount=" + createExtractorCount + ";segment=" + segment));
 //                    return extractor;
 //                }
@@ -357,7 +357,7 @@ public class VideoTrackExtractor {
 //                    e.printStackTrace();
 //                }
 //                createExtractorCount++;
-//                if (Constants.VERBOSE_V)
+//                if (EditConstants.VERBOSE_V)
 //                    Log.d(TAG_V, logString("createExtractor:", "重新创建_MediaExtractor:targetMs=" + targetMs + ";createExtractorCount=" + createExtractorCount + ";segment=" + segment));
 //                createExtractor(segment, targetMs);
 //            } else {
@@ -376,7 +376,7 @@ public class VideoTrackExtractor {
             try {
                 extractor.release();
                 extractor = null;
-                if (Constants.VERBOSE_V)
+                if (EditConstants.VERBOSE_V)
                     Log.d(TAG_V, logString("createExtractor:", "releaseExtractor Sucess!"));
             } catch (Exception e) {
                 Log.e(TAG_V, logEString("release  Extractor error:", e.getMessage()), e);

@@ -52,20 +52,15 @@ import com.zp.libvideoedit.utils.SortRecoderByAtTime;
 import com.zp.libvideoedit.utils.SortSegmentByTargetTimeRange;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static com.zp.libvideoedit.Constants.MAX_TIME_DIFF_SEC;
-import static com.zp.libvideoedit.Constants.TAG_M;
-import static com.zp.libvideoedit.Constants.TAILER_H_MP4;
-import static com.zp.libvideoedit.Constants.TAILER_V_MP4;
-import static com.zp.libvideoedit.Constants.VERBOSE;
-import static com.zp.libvideoedit.Constants.VERBOSE_EN;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.MAX_TIME_DIFF_SEC;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 
 /**
  * Created by gwd on 2018/3/8.
@@ -294,7 +289,7 @@ public class VideoEffect {
      * @throws InvalidVideoSourceException
      */
     public void addChunk(String filePath) throws InvalidVideoSourceException {
-        if (VERBOSE) Log.d(Constants.TAG, "VideoEffect_addChunk:" + filePath);
+        if (VERBOSE) Log.d(EditConstants.TAG, "VideoEffect_addChunk:" + filePath);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         mProject.addChunk(filePath);
         needRebuildVideo = true;
@@ -320,9 +315,9 @@ public class VideoEffect {
 //        return mProject.getLeastScript();
 //    }
     private void loadChunkBitmap(String filePath) {
-        if (VERBOSE) Log.d(Constants.TAG, "VideoEffect_loadChunkBitmap:" + filePath);
+        if (VERBOSE) Log.d(EditConstants.TAG, "VideoEffect_loadChunkBitmap:" + filePath);
         ArrayList<Long> list = new ArrayList<>();
-        list.add((long) (0.1 * Constants.US_MUTIPLE));
+        list.add((long) (0.1 * EditConstants.US_MUTIPLE));
         VideoFile videoFile = null;
         try {
             videoFile = VideoFile.getVideoFileInfo(filePath, mContext);
@@ -350,7 +345,7 @@ public class VideoEffect {
 
     public void addChunk(String filePath, float jingdu, float weidu, CMTimeRange chunkEditTimeRange) throws InvalidVideoSourceException {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_addChunk_chunkEditTimeRange:" + filePath + ", timeRange:" + chunkEditTimeRange);
+            Log.d(EditConstants.TAG, "VideoEffect_addChunk_chunkEditTimeRange:" + filePath + ", timeRange:" + chunkEditTimeRange);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         Chunk chunk = new Chunk(filePath, mContext, false);
         chunk.setChunkEditTimeRange(chunkEditTimeRange);
@@ -362,7 +357,7 @@ public class VideoEffect {
 
     public void addChunk(String filePath, VideoFile videoFile, AudioFile audioFile, float jingdu, float weidu) throws InvalidVideoSourceException {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_addChunk_withVideo_file_audioFile:" + filePath + ", videoFile:" + videoFile + ",audioFile:" + audioFile);
+            Log.d(EditConstants.TAG, "VideoEffect_addChunk_withVideo_file_audioFile:" + filePath + ", videoFile:" + videoFile + ",audioFile:" + audioFile);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         mProject.addChunk(filePath, videoFile, audioFile, jingdu, weidu);
         needRebuildVideo = true;
@@ -372,7 +367,7 @@ public class VideoEffect {
 
     public void addChunk(String filePath, VideoFile videoFile, AudioFile audioFile, float jingdu, float weidu, CMTimeRange chunkEditTimeRange) throws InvalidVideoSourceException {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_addChunk_withVideo_file_audioFile:" + filePath + ", videoFile:" + videoFile + ",audioFile:" + audioFile);
+            Log.d(EditConstants.TAG, "VideoEffect_addChunk_withVideo_file_audioFile:" + filePath + ", videoFile:" + videoFile + ",audioFile:" + audioFile);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         Chunk chunk = mProject.addChunk(filePath, videoFile, audioFile, jingdu, weidu);
         chunk.setChunkEditTimeRange(chunkEditTimeRange);
@@ -388,7 +383,7 @@ public class VideoEffect {
      * @param chunkIndex
      */
     public void deleteChunk(int chunkIndex) {
-        if (VERBOSE) Log.d(Constants.TAG, "VideoEffect_deleteChunk:" + chunkIndex);
+        if (VERBOSE) Log.d(EditConstants.TAG, "VideoEffect_deleteChunk:" + chunkIndex);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         mProject.deleteChunk(chunkIndex);
         needRebuildVideo = true;
@@ -407,7 +402,7 @@ public class VideoEffect {
      * @param chunk
      */
     public void deleteChunk(Chunk chunk) {
-        if (VERBOSE) Log.d(Constants.TAG, "VideoEffect_deleteChunk:" + chunk);
+        if (VERBOSE) Log.d(EditConstants.TAG, "VideoEffect_deleteChunk:" + chunk);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         mProject.deleteChunk(chunk);
         needRebuildVideo = true;
@@ -424,7 +419,7 @@ public class VideoEffect {
      */
     public void spliteChunk(int chunkIndex, CMTime atTime) {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_spliteChunk:" + chunkIndex + ", atTime:" + atTime);
+            Log.d(EditConstants.TAG, "VideoEffect_spliteChunk:" + chunkIndex + ", atTime:" + atTime);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         mProject.copyChunk(chunkIndex);
         Chunk source = mProject.getChunks().get(chunkIndex);
@@ -458,7 +453,7 @@ public class VideoEffect {
      */
     public void resizeChunk(int chunkIndex, CMTimeRange timeRange) {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_resizeChunk:" + chunkIndex + ", timeRange:" + timeRange);
+            Log.d(EditConstants.TAG, "VideoEffect_resizeChunk:" + chunkIndex + ", timeRange:" + timeRange);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         Chunk chunk = mProject.getChunks().get(chunkIndex);
         if (chunk.isReverseVideo()) {
@@ -475,7 +470,7 @@ public class VideoEffect {
      * @param chunkIndex
      */
     public void cloneChunk(int chunkIndex) {
-        if (VERBOSE) Log.d(Constants.TAG, "VideoEffect_cloneChunk:" + chunkIndex);
+        if (VERBOSE) Log.d(EditConstants.TAG, "VideoEffect_cloneChunk:" + chunkIndex);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         mProject.copyChunk(chunkIndex);
         needRebuildVideo = true;
@@ -504,7 +499,7 @@ public class VideoEffect {
      */
     public void exchangeChunk(int sourceIndex, int toIndex) {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_exchangeChunk_sourceIndex:" + sourceIndex + ", toIndex" + toIndex);
+            Log.d(EditConstants.TAG, "VideoEffect_exchangeChunk_sourceIndex:" + sourceIndex + ", toIndex" + toIndex);
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         mProject.exchangeChunk(sourceIndex, toIndex);
         needRebuildAudio = true;
@@ -521,7 +516,7 @@ public class VideoEffect {
      */
     public void revertChunk(int chunkIndex, boolean toRever, final ReverseCallBack callBack) {
         if (VERBOSE_TR)
-            Log.d(Constants.TAG, "VideoEffect_revertChunk:" + chunkIndex + "；toRever=" + toRever);
+            Log.d(EditConstants.TAG, "VideoEffect_revertChunk:" + chunkIndex + "；toRever=" + toRever);
         final Chunk chunk = mProject.getChunks().get(chunkIndex);
         //正播
         if (!toRever) {
@@ -530,11 +525,11 @@ public class VideoEffect {
         }
         //倒播
         String chunFilePath = chunk.getFilePath();
-        final String reversePath = Constants.TEMP_REVERSE_PATH + "/" + chunFilePath.substring(chunFilePath.lastIndexOf("/") + 1).replace(".mp4", "_reverse.mp4");
+        final String reversePath = EditConstants.TEMP_REVERSE_PATH + "/" + chunFilePath.substring(chunFilePath.lastIndexOf("/") + 1).replace(".mp4", "_reverse.mp4");
         File file = new File(reversePath);
         if (!file.exists()) {
             if (VERBOSE_TR)
-                Log.d(Constants.TAG, "VideoEffect_revertChunk_toTransCodes:reversePath=" + reversePath);
+                Log.d(EditConstants.TAG, "VideoEffect_revertChunk_toTransCodes:reversePath=" + reversePath);
             mVideoEffectReverseCallBack = new VideoEffectReverseCallBack() {
                 @Override
                 public void onProcess(float process) {
@@ -591,7 +586,7 @@ public class VideoEffect {
         if (mVideoEffectReverseCallBack == null) return;
         mVideoEffectReverseCallBack.setCancleReverse(true);
         if (VERBOSE_TR)
-            Log.d(Constants.TAG, "VideoEffect_cancleRevertChunk");
+            Log.d(EditConstants.TAG, "VideoEffect_cancleRevertChunk");
 
     }
 
@@ -606,7 +601,7 @@ public class VideoEffect {
      * @param cropStart
      */
     public void updateChunkCropStart(int chunkIndex, float cropStart) {
-        if (VERBOSE) Log.d(Constants.TAG, "VideoEffect_updateChunkCropStart:" + chunkIndex);
+        if (VERBOSE) Log.d(EditConstants.TAG, "VideoEffect_updateChunkCropStart:" + chunkIndex);
         Chunk chunk = mProject.getChunks().get(chunkIndex);
         chunk.setCropStart(cropStart);
         needRebuildVideo = true;
@@ -668,8 +663,8 @@ public class VideoEffect {
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
         Chunk chunk = mProject.getChunks().get(chunkIndex);
         chunk.setTransition(style, mProject.getRotation(), transitionDuration);
-        if (Constants.VERBOSE_EDIT)
-            Log.i(Constants.TAG_EDIT, "videoEffect_setTransition_project_call" + "  chunkIndex " + chunkIndex + " style: " + style + "  rotation:  " + mProject.getRotation());
+        if (EditConstants.VERBOSE_EDIT)
+            Log.i(EditConstants.TAG_EDIT, "videoEffect_setTransition_project_call" + "  chunkIndex " + chunkIndex + " style: " + style + "  rotation:  " + mProject.getRotation());
     }
 
     /**
@@ -1740,8 +1735,8 @@ public class VideoEffect {
             if (!chunk.isAddTrans()) {
                 Chunk chunkTmp = mProject.getChunks().get(i);
                 chunkTmp.setTransition(TransitionStyle.VNITransitionTypeNone, mProject.getRotation(), CMTime.zeroTime());
-                if (Constants.VERBOSE_EDIT)
-                    Log.i(Constants.TAG_EDIT, "videoEffect_checkTransition set None");
+                if (EditConstants.VERBOSE_EDIT)
+                    Log.i(EditConstants.TAG_EDIT, "videoEffect_checkTransition set None");
                 chunkTmp.setTransIndex(i);
             }
             chunk.setChunkTransitionHeadTime(CMTime.zeroTime());
@@ -1961,7 +1956,7 @@ public class VideoEffect {
             } else {
                 currentChunk.setChunkTransitionTailTime(CMTime.zeroTime());
             }
-            Log.d(Constants.TAG_AE, "片段: " + i + " 开始时间: " + CMTime.getSecond(currentChunk.getStartTime()) + " 结束时间: " + CMTime.getSecond(currentChunk.getEndTime()) + " 片段时长：  " + CMTime.getSecond(CMTime.subTime(currentChunk.getEndTime(), currentChunk.getStartTime())) + " 转场时间： " + CMTime.getSecond(currentChunk.getChunkTransitionTime()) + " 转场Header: " + CMTime.getSecond(currentChunk.getChunkTransitionHeadTime()) + " 转场tail: " + CMTime.getSecond(currentChunk.getChunkTransitionTailTime()));
+            Log.d(EditConstants.TAG_AE, "片段: " + i + " 开始时间: " + CMTime.getSecond(currentChunk.getStartTime()) + " 结束时间: " + CMTime.getSecond(currentChunk.getEndTime()) + " 片段时长：  " + CMTime.getSecond(CMTime.subTime(currentChunk.getEndTime(), currentChunk.getStartTime())) + " 转场时间： " + CMTime.getSecond(currentChunk.getChunkTransitionTime()) + " 转场Header: " + CMTime.getSecond(currentChunk.getChunkTransitionHeadTime()) + " 转场tail: " + CMTime.getSecond(currentChunk.getChunkTransitionTailTime()));
         }
 
     }
@@ -2842,7 +2837,7 @@ public class VideoEffect {
      */
     private void invertedTranscoder(ScriptVideoModel scriptVideoModel) throws InvalidVideoSourceException {
         String chunFilePath = scriptVideoModel.getVideoPath();
-        final String reversePath = Constants.TEMP_REVERSE_PATH + "/" + chunFilePath.substring(chunFilePath.lastIndexOf("/") + 1).replace(".mp4", "_reverse.mp4");
+        final String reversePath = EditConstants.TEMP_REVERSE_PATH + "/" + chunFilePath.substring(chunFilePath.lastIndexOf("/") + 1).replace(".mp4", "_reverse.mp4");
         File file = new File(reversePath);
         if (!file.exists()) {
             VideoFile videoFile = VideoFile.getVideoFileInfo(scriptVideoModel.getVideoPath(), mContext);
@@ -2953,8 +2948,8 @@ public class VideoEffect {
 //                    }
 //                    if (scriptCallBack != null) scriptCallBack.loadSuccess(checkScriptCanPlay());
 //                } catch (Exception e) {
-//                    if (Constants.VERBOSE_EDIT)
-//                        Log.e(Constants.TAG_EDIT, "error " + e.getMessage());
+//                    if (EditConstants.VERBOSE_EDIT)
+//                        Log.e(EditConstants.TAG_EDIT, "error " + e.getMessage());
 //                    e.printStackTrace();
 //                    if (scriptCallBack != null) scriptCallBack.loadFaild(e);
 //                }
@@ -3139,8 +3134,8 @@ public class VideoEffect {
 //        //calc 时间
 //        CMTime time = this.projectDuration;
 //        float second = (float) this.projectDuration.getSecond();
-//        if (second > Constants.VIDEOMAXDURATION) {
-//            time = new CMTime(Constants.VIDEOMAXDURATION);
+//        if (second > EditConstants.VIDEOMAXDURATION) {
+//            time = new CMTime(EditConstants.VIDEOMAXDURATION);
 //        }
 //        //加滤镜
 ////        VNITailBureFilter bureFilter = new VNITailBureFilter();
@@ -3168,7 +3163,7 @@ public class VideoEffect {
     }
 
     public void buildTailer() {
-        float subTime = Constants.VIDEOMAXDURATION - 0.1f;
+        float subTime = EditConstants.VIDEOMAXDURATION - 0.1f;
         if (projectDuration.getSecond() > subTime) {
             if (mediaComposition != null) {
                 //从片尾的位置裁掉剩余的部分
@@ -3281,7 +3276,7 @@ public class VideoEffect {
      */
     public void adjustAudioChunk(String id, final float volume) {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_adjustAudioChunk:" + id + ", volume:" + volume);
+            Log.d(EditConstants.TAG, "VideoEffect_adjustAudioChunk:" + id + ", volume:" + volume);
 
         if (saveEventCallback != null) saveEventCallback.videoEffectSaveEvent();
 
@@ -3320,7 +3315,7 @@ public class VideoEffect {
      */
     public void adjustAudioChunkStartTime(String id, final CMTime startTime, final CMTimeRange timeRange) {
         if (VERBOSE)
-            Log.d(Constants.TAG, "VideoEffect_adjustAudioChunkStartTime:" + id + ", startTime:" + startTime);
+            Log.d(EditConstants.TAG, "VideoEffect_adjustAudioChunkStartTime:" + id + ", startTime:" + startTime);
 
         LogUtil.e("audioChunk", startTime.toString());
         LogUtil.e("audioChunk", timeRange.toString());

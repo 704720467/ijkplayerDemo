@@ -2,7 +2,7 @@ package com.zp.libvideoedit.GPUImage.Filter;
 
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.FilterCore.GPUImageTwoInput;
 import com.zp.libvideoedit.Time.CMTime;
 
@@ -28,10 +28,10 @@ public class GPUImageTransitionFilter extends GPUImageTwoInput {
 
     @Override
     public void newFrameReadyAtTime(long frameTime, int textureIndex) {
-        if (Constants.VERBOSE_GL)
+        if (EditConstants.VERBOSE_GL)
             Log.d("GPUImageTwoInput", "newFrameReadyAtTime  ,textureIndex:  " + textureIndex);
         currentFrameIndex = frameTime;
-        currentTime = new CMTime(frameTime, Constants.NS_MUTIPLE);
+        currentTime = new CMTime(frameTime, EditConstants.NS_MUTIPLE);
         if (hasReceivedFirstFrame && hasReceivedSecondFrame) return;
         if (textureIndex == 0) {
             hasReceivedFirstFrame = true;

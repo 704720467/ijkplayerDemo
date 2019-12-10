@@ -16,14 +16,14 @@ import com.zp.libvideoedit.utils.Resample;
 
 import java.util.ArrayList;
 
-import static com.zp.libvideoedit.Constants.DEFAULT_AUDIO_CHANNEL_CONFIG;
-import static com.zp.libvideoedit.Constants.DEFAULT_AUDIO_SAMPLE_RATE;
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_A;
-import static com.zp.libvideoedit.Constants.TAG_EN;
-import static com.zp.libvideoedit.Constants.VERBOSE;
-import static com.zp.libvideoedit.Constants.VERBOSE_A;
-import static com.zp.libvideoedit.Constants.VERBOSE_LOOP_A;
+import static com.zp.libvideoedit.EditConstants.DEFAULT_AUDIO_CHANNEL_CONFIG;
+import static com.zp.libvideoedit.EditConstants.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_A;
+import static com.zp.libvideoedit.EditConstants.TAG_EN;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_A;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_LOOP_A;
 
 
 /**

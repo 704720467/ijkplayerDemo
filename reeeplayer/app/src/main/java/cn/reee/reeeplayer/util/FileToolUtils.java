@@ -1,11 +1,19 @@
 package cn.reee.reeeplayer.util;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+
+import cn.reee.reeeplayer.modle.ZpFileInfo;
 
 
 public class FileToolUtils {
@@ -248,5 +256,168 @@ public class FileToolUtils {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+    public static ArrayList<ZpFileInfo> getAllVideo(Context context) {
+        ArrayList<ZpFileInfo> videos = new ArrayList<ZpFileInfo>();
+        String[] mediaColumns = new String[]{
+                MediaStore.Video.VideoColumns._ID,
+                MediaStore.Video.VideoColumns.DATA,
+                MediaStore.Video.VideoColumns.DISPLAY_NAME,
+                MediaStore.Video.VideoColumns.DURATION
+        };
+        ContentResolver contentResolver = context.getApplicationContext().getContentResolver();
+        Cursor cursor = contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                mediaColumns, null, null, MediaStore.Images.Media.DATE_TAKEN + " DESC");
+
+        if (cursor == null) return videos;
+
+        if (cursor.moveToFirst()) {
+            do {
+                String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                File file = new File(path);
+                boolean canRead = file.canRead();
+                long length = file.length();
+                if (!canRead || length <= 0) {
+                    continue;
+                }
+                long duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                if (duration < 1000) {
+                    continue;
+                }
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME));
+                ZpFileInfo fileItem = new ZpFileInfo();
+                fileItem.setFilePath(path);
+                fileItem.setFileName(name);
+                fileItem.setDuration(duration);
+                fileItem.setFileType(ZpFileInfo.FILE_TYPE_VIDEO);
+                fileItem.setThumbPath(cursor.getString(cursor
+                        .getColumnIndex(MediaStore.Video.Thumbnails.DATA)));
+                if (fileItem.getFileName() != null && fileItem.getFileName().endsWith(".mp4")) {
+                    videos.add(fileItem);
+                }
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        return videos;
+    }
+
+    public static ArrayList<ZpFileInfo> getAllPictrue(Context context) {
+        ArrayList<ZpFileInfo> pictureList = new ArrayList<ZpFileInfo>();
+        String[] mediaColumns = new String[]{
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media.DESCRIPTION
+        };
+        ContentResolver contentResolver = context.getApplicationContext().getContentResolver();
+
+        Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mediaColumns, null, null, MediaStore.Images.Media.DATE_TAKEN + " DESC");//按照创建时间降序排序
+        while (cursor.moveToNext()) {
+            String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
+            File file = new File(path);
+            boolean canRead = file.canRead();
+            long length = file.length();
+            if (!canRead || length <= 0) {
+                continue;
+            }
+            ZpFileInfo fileItem = new ZpFileInfo();
+            fileItem.setFilePath(path);
+            fileItem.setFileName(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)));
+            fileItem.setFileType(ZpFileInfo.FILE_TYPE_PICTURE);
+            fileItem.setThumbPath(cursor.getString(cursor
+                    .getColumnIndex(MediaStore.Images.Thumbnails.DATA)));
+            pictureList.add(fileItem);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return pictureList;
+    }
+
+
+    public static Pair<Long, String> getLatestPhoto(Context context) {
+        //拍摄照片的地址
+        String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
+        //截屏照片的地址
+        String SCREENSHOTS_IMAGE_BUCKET_NAME = getScreenshotsPath();
+        //拍摄照片的地址ID
+        String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
+        //截屏照片的地址ID
+        String SCREENSHOTS_IMAGE_BUCKET_ID = getBucketId(SCREENSHOTS_IMAGE_BUCKET_NAME);
+        //查询路径和修改时间
+        String[] projection = {MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media.DATE_MODIFIED};
+        //
+        String selection = MediaStore.Images.Media.BUCKET_ID + " = ?";
+        //
+        String[] selectionArgs = {CAMERA_IMAGE_BUCKET_ID};
+        String[] selectionArgsForScreenshots = {SCREENSHOTS_IMAGE_BUCKET_ID};
+
+        //检查camera文件夹，查询并排序
+        Pair<Long, String> cameraPair = null;
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC");
+        if (cursor.moveToFirst()) {
+            cameraPair = new Pair(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)),
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+        }
+        //检查Screenshots文件夹
+        Pair<Long, String> screenshotsPair = null;
+        //查询并排序
+        cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                selectionArgsForScreenshots,
+                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC");
+
+        if (cursor.moveToFirst()) {
+            screenshotsPair = new Pair(cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED)),
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+        }
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        //对比
+        if (cameraPair != null && screenshotsPair != null) {
+            if (cameraPair.first > screenshotsPair.first) {
+                screenshotsPair = null;
+                return cameraPair;
+            } else {
+                cameraPair = null;
+                return screenshotsPair;
+            }
+
+        } else if (cameraPair != null && screenshotsPair == null) {
+            return cameraPair;
+
+        } else if (cameraPair == null && screenshotsPair != null) {
+            return screenshotsPair;
+        }
+        return null;
+    }
+
+    /**
+     * 获取截图路径
+     *
+     * @return
+     */
+    public static String getScreenshotsPath() {
+        String path = Environment.getExternalStorageDirectory().toString() + "/DCIM/Screenshots";
+        File file = new File(path);
+        if (!file.exists()) {
+            path = Environment.getExternalStorageDirectory().toString() + "/Pictures/Screenshots";
+        }
+        file = null;
+        return path;
+    }
+
+    private static String getBucketId(String path) {
+        return String.valueOf(path.toLowerCase().hashCode());
     }
 }

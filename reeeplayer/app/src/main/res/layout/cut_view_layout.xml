@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <View
+        android:id="@+id/middle_view"
+        android:layout_width="10px"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/right_bar_view"
+        android:layout_toRightOf="@+id/left_bar_view" />
+
+    <ImageView
+        android:id="@+id/left_bar_view"
+        android:layout_width="42px"
+        android:layout_height="match_parent"
+        android:rotationY="180"
+        android:src="@drawable/ic_cut_bar" />
+
+
+    <ImageView
+        android:id="@+id/right_bar_view"
+        android:layout_width="42px"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_cut_bar" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="5px"
+        android:layout_alignLeft="@+id/left_bar_view"
+        android:layout_alignTop="@+id/left_bar_view"
+        android:layout_marginLeft="21px"
+        android:layout_marginRight="21px"
+        android:layout_toRightOf="@+id/right_bar_view"
+        android:background="#ffffff" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="5px"
+        android:layout_alignLeft="@+id/left_bar_view"
+        android:layout_alignBottom="@+id/left_bar_view"
+        android:layout_marginLeft="21px"
+        android:layout_marginRight="21px"
+        android:layout_toRightOf="@+id/right_bar_view"
+        android:background="#ffffff" />
+
+</cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

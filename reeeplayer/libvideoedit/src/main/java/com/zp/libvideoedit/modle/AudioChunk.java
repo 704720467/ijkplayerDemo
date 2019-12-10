@@ -10,7 +10,7 @@ import com.zp.libvideoedit.Time.CMTimeRange;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static com.zp.libvideoedit.Constants.TAG_A;
+import static com.zp.libvideoedit.EditConstants.TAG_A;
 
 
 /**

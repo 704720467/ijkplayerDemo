@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.Time.CMTime;
 import com.zp.libvideoedit.Time.CMTimeMapping;
 import com.zp.libvideoedit.Time.CMTimeRange;
@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
 import static com.zp.libvideoedit.utils.FormatUtils.generateCallStack;
 import static com.zp.libvideoedit.utils.FormatUtils.repeat;
 import static com.zp.libvideoedit.utils.FormatUtils.rightPad;
@@ -55,14 +55,14 @@ public class MediaTrack<T extends Segment> {
         if (segments.size() != 0) {
             Segment lastsegment = segments.get(segments.size() - 1);
             lastDesTime = lastsegment.timeMapping.getTargetTimeRange().getEnd();
-            if (Constants.VERBOSE_V)
+            if (EditConstants.VERBOSE_V)
                 Log.d(this.getClass().getSimpleName(), "MediaTrack_insertTrack_nomal_src" + " srcStart: " + srcTimeRange.getStartTime().getSecond() + "  end " + srcTimeRange.getEnd().getSecond());
         }
         //说明插入的时间比当前的segments的终点时间还要大需要自动插入空segment
         if (CMTime.compare(insertAtTime, lastDesTime) > 0) {
             CMTimeRange timeRange = new CMTimeRange(lastDesTime, CMTime.subTime(insertAtTime, lastDesTime, US_MUTIPLE));
             insertEmpy(timeRange);
-            if (Constants.VERBOSE_V)
+            if (EditConstants.VERBOSE_V)
                 Log.d(this.getClass().getSimpleName(), "MediaTrack_insertTrack_empty_src" + " srcStart: " + timeRange.getStartTime().getSecond() + "  end " + timeRange.getEnd().getSecond());
         } else if (CMTime.compare(insertAtTime, lastDesTime) < 0) {
             //如果后插入的 开始时间小于上一个的结束时间，修改上一个展示时间，（待定：小于0.1秒自动移除）
@@ -176,8 +176,8 @@ public class MediaTrack<T extends Segment> {
     }
 
     public void removeFromTime(CMTime atTime) {
-        if (Constants.VERBOSE_EDIT)
-            Log.e(Constants.TAG_AE, "MediaTrack_removeFromTime" + " track :  " + trackType + " atTime: " + atTime.getSecond() + "   duration:   " + getDuration().getSecond());
+        if (EditConstants.VERBOSE_EDIT)
+            Log.e(EditConstants.TAG_AE, "MediaTrack_removeFromTime" + " track :  " + trackType + " atTime: " + atTime.getSecond() + "   duration:   " + getDuration().getSecond());
         //如果裁剪的时间大于mediaTrack的时长直接return
         if (atTime.getSecond() > getDuration().getSecond()) return;
         for (int i = segments.size() - 1; i >= 0; --i) {
@@ -526,7 +526,7 @@ public class MediaTrack<T extends Segment> {
 
             }
         }
-        if (Constants.VERBOSE_A && this.mediaType == MediaType.MEDIA_TYPE_Audio) {
+        if (EditConstants.VERBOSE_A && this.mediaType == MediaType.MEDIA_TYPE_Audio) {
             for (Segment segment : segments) {
                 Log.e("setInputParameter", "setInputParameter: " + segment.getVolume() + "   trckType " + trackType);
             }

@@ -5,7 +5,7 @@ import android.media.MediaFormat;
 import android.util.Log;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.exceptions.EffectRuntimeException;
 import com.zp.libvideoedit.exceptions.InvalidVideoSourceException;
 import com.zp.libvideoedit.modle.AudioSegment;
@@ -26,14 +26,14 @@ import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.zp.libvideoedit.Constants.DEFAULT_AUDIO_BUFFER_SIZE;
-import static com.zp.libvideoedit.Constants.DEFAULT_AUDIO_CHANNEL_COUNT;
-import static com.zp.libvideoedit.Constants.DEFAULT_AUDIO_SAMPLE_RATE;
-import static com.zp.libvideoedit.Constants.TAG_A;
-import static com.zp.libvideoedit.Constants.TIMEOUT_USEC;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE_A;
-import static com.zp.libvideoedit.Constants.VERBOSE_LOOP_A;
+import static com.zp.libvideoedit.EditConstants.DEFAULT_AUDIO_BUFFER_SIZE;
+import static com.zp.libvideoedit.EditConstants.DEFAULT_AUDIO_CHANNEL_COUNT;
+import static com.zp.libvideoedit.EditConstants.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.zp.libvideoedit.EditConstants.TAG_A;
+import static com.zp.libvideoedit.EditConstants.TIMEOUT_USEC;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_A;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_LOOP_A;
 import static com.zp.libvideoedit.modle.DecoderThreadState.idle;
 import static com.zp.libvideoedit.modle.DecoderThreadState.readly;
 import static com.zp.libvideoedit.modle.DecoderThreadState.runing;
@@ -697,7 +697,7 @@ public class AudioTrackDecoderThread extends Thread {
             targetPts = 0;
         }
         if (VERBOSE_LOOP_A)
-            Log.d(Constants.TAG_A, dequeueLog("computePresentationTimeNsec", "targetPts:" + String.format("%,d", targetPts) + "\t:ptsInFile:" + String.format("%,d", ptsInFile)) + String.format("reduceSize: %f", segment.getScale()) + "\t" + segment.toString());
+            Log.d(EditConstants.TAG_A, dequeueLog("computePresentationTimeNsec", "targetPts:" + String.format("%,d", targetPts) + "\t:ptsInFile:" + String.format("%,d", ptsInFile)) + String.format("reduceSize: %f", segment.getScale()) + "\t" + segment.toString());
 
         return targetPts;
 

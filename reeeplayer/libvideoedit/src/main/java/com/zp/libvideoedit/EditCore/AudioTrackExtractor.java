@@ -5,7 +5,7 @@ import android.media.MediaFormat;
 import android.util.Log;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.modle.AudioSegment;
 import com.zp.libvideoedit.modle.ExtractResult;
 import com.zp.libvideoedit.modle.ExtractState;
@@ -19,11 +19,11 @@ import com.zp.libvideoedit.utils.MediaUtils;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import static com.zp.libvideoedit.Constants.DEFAULT_AUDIO_BUFFER_SIZE;
-import static com.zp.libvideoedit.Constants.TAG_A;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE_A;
-import static com.zp.libvideoedit.Constants.VERBOSE_LOOP_A;
+import static com.zp.libvideoedit.EditConstants.DEFAULT_AUDIO_BUFFER_SIZE;
+import static com.zp.libvideoedit.EditConstants.TAG_A;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_A;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_LOOP_A;
 import static com.zp.libvideoedit.modle.ExtractState.hasNext;
 import static com.zp.libvideoedit.modle.ExtractState.pading;
 import static com.zp.libvideoedit.modle.ExtractState.segBegin;
@@ -127,7 +127,7 @@ public class AudioTrackExtractor {
 
     }
 
-    private final int ptsOffset = Math.round(DEFAULT_AUDIO_BUFFER_SIZE * US_MUTIPLE / Constants.DEFAULT_AUDIO_CHANNEL_COUNT / Constants.DEFAULT_AUDIO_SAMPLE_RATE);
+    private final int ptsOffset = Math.round(DEFAULT_AUDIO_BUFFER_SIZE * US_MUTIPLE / EditConstants.DEFAULT_AUDIO_CHANNEL_COUNT / EditConstants.DEFAULT_AUDIO_SAMPLE_RATE);
 
     /**
      * 注意:音频存在advance=true，size<0的情况

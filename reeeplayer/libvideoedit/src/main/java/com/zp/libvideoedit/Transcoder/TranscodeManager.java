@@ -21,13 +21,11 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_TR;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_TR;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
 
 /**

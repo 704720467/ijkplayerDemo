@@ -9,7 +9,7 @@ import android.media.MediaMetadataRetriever;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageFrameBuffer;
 import com.zp.libvideoedit.GPUImage.Core.GPUSize;
 
@@ -57,8 +57,8 @@ public class MediaUtils {
      * @throws IOException
      */
     public void setDataSource(MediaExtractor extrator, String path) throws IOException {
-        if (path.startsWith(Constants.ASSERT_FILE_PREFIX)) {
-            String assertPath = path.substring(Constants.ASSERT_FILE_PREFIX.length());
+        if (path.startsWith(EditConstants.ASSERT_FILE_PREFIX)) {
+            String assertPath = path.substring(EditConstants.ASSERT_FILE_PREFIX.length());
             AssetFileDescriptor assetFileDescriptor = context.getAssets().openFd(assertPath);
             extrator.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
         } else {
@@ -67,8 +67,8 @@ public class MediaUtils {
     }
 
     public void setDataSource(MediaMetadataRetriever retriever, String path) throws IOException {
-        if (path.startsWith(Constants.ASSERT_FILE_PREFIX)) {
-            String assertPath = path.substring(Constants.ASSERT_FILE_PREFIX.length());
+        if (path.startsWith(EditConstants.ASSERT_FILE_PREFIX)) {
+            String assertPath = path.substring(EditConstants.ASSERT_FILE_PREFIX.length());
             AssetFileDescriptor assetFileDescriptor = context.getAssets().openFd(assertPath);
             retriever.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
         } else {

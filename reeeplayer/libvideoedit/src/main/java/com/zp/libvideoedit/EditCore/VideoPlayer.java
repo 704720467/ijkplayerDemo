@@ -15,12 +15,12 @@ import com.zp.libvideoedit.modle.VideoCompositionCallBack;
 import com.zp.libvideoedit.modle.VideoPlayerCallBack;
 import com.zp.libvideoedit.modle.VideoTimer;
 
-import static com.zp.libvideoedit.Constants.PLAY_AUDIO;
-import static com.zp.libvideoedit.Constants.PLAY_VIDEO;
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.VERBOSE;
-import static com.zp.libvideoedit.Constants.VERBOSE_SEEK;
-import static com.zp.libvideoedit.Constants.VERBOSE_V;
+import static com.zp.libvideoedit.EditConstants.PLAY_AUDIO;
+import static com.zp.libvideoedit.EditConstants.PLAY_VIDEO;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_SEEK;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_V;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
 import static com.zp.libvideoedit.utils.FormatUtils.generateCallStack;
 

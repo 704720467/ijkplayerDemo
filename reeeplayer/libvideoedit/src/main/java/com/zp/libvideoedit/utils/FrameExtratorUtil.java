@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.zp.libvideoedit.Constants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG;
 
 
 /**

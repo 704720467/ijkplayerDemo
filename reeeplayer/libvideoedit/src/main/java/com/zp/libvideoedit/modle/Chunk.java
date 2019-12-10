@@ -9,7 +9,7 @@ import android.renderscript.Matrix4f;
 import android.util.Log;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPURect;
 import com.zp.libvideoedit.GPUImage.Core.GPUSize;
 import com.zp.libvideoedit.GPUImage.Filter.GPUImageTransitionFilter;
@@ -20,7 +20,6 @@ import com.zp.libvideoedit.modle.Transition.Origentation;
 import com.zp.libvideoedit.modle.Transition.TransitionStyle;
 import com.zp.libvideoedit.modle.Transition.VNITransitionFactory;
 import com.zp.libvideoedit.modle.script.ScriptVideoModel;
-import com.zp.libvideoedit.utils.Common;
 import com.zp.libvideoedit.utils.LogUtil;
 import com.zp.libvideoedit.utils.MatrixUtils;
 
@@ -30,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.zp.libvideoedit.Constants.TAG_DRAF;
-import static com.zp.libvideoedit.Constants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.TAG_DRAF;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
 
 
 /**
@@ -608,16 +607,16 @@ public class Chunk {
         this.videoAspectOrigentation = rotation;
         setChunkTransitionTime(transitionDuration);
         this.transitionFilter = VNITransitionFactory.transitionFilterWithType(style, rotation);
-        if (Constants.VERBOSE_EDIT)
-            Log.i(Constants.TAG_EDIT, "videoEffect_chunk_setTransition : " + style + " rotation " + rotation + "  duration : " + transitionDuration.getSecond());
+        if (EditConstants.VERBOSE_EDIT)
+            Log.i(EditConstants.TAG_EDIT, "videoEffect_chunk_setTransition : " + style + " rotation " + rotation + "  duration : " + transitionDuration.getSecond());
         if (needSave) {
 //            DBManage.getInstance().getDefaultRealm().executeTransaction(new Realm.Transaction() {
 //                @Override
 //                public void execute(Realm realm) {
 //                    chunkVo.setTransitionStyle(style.getValue());
 //                    realm.insertOrUpdate(chunkVo);
-//                    if (Constants.VERBOSE_EDIT)
-//                        Log.i(Constants.TAG_EDIT, "videoEffect_chunk_draft : " + " chunkIndex" + chunkIndex + style + " value : " + style.getValue() + "  chunkvo.transitionstyle: " + chunkVo.getTransitionStyle());
+//                    if (EditConstants.VERBOSE_EDIT)
+//                        Log.i(EditConstants.TAG_EDIT, "videoEffect_chunk_draft : " + " chunkIndex" + chunkIndex + style + " value : " + style.getValue() + "  chunkvo.transitionstyle: " + chunkVo.getTransitionStyle());
 //
 //                }
 //            });

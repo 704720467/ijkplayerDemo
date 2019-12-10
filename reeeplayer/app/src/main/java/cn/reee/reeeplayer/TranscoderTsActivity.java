@@ -4,8 +4,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
-import android.media.MediaCodec;
-import android.media.MediaFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.view.View;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 import com.zp.libvideoedit.Transcoder.TranscodeManager;
-import com.zp.libvideoedit.Transcoder.TranscodeListener;
 import com.zp.libvideoedit.Transcoder.TranscodeManagerCallback;
 import com.zp.libvideoedit.Transcoder.Transcoder;
 import com.zp.libvideoedit.utils.FileUtils;
@@ -22,13 +19,12 @@ import com.zp.libvideoedit.utils.MediaUtils;
 import com.zp.libvideoedit.utils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cn.reee.reeeplayer.view.dialog.DelayLoadingDialogManager;
 
-import static com.zp.libvideoedit.Constants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
 
 public class TranscoderTsActivity extends AppCompatActivity {
     private static final String TAG = "TranscoderTsActivity";

@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 
-import static com.zp.libvideoedit.Constants.MS_MUTIPLE;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.MS_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
 
 /**
  * Created by gwd on 2018/3/8.

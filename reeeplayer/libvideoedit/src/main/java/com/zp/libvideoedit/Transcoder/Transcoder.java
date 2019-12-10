@@ -18,7 +18,7 @@ import android.util.Size;
 import android.view.Surface;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.R;
 import com.zp.libvideoedit.Time.CMTime;
 import com.zp.libvideoedit.modle.AudioFile;
@@ -33,11 +33,11 @@ import java.nio.ShortBuffer;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_TR;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE_EN;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_TR;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_EN;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 import static com.zp.libvideoedit.utils.CodecUtils.createExtractor;
 import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectAudioTrackIndex;
 import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectVideoTrackIndex;
@@ -231,7 +231,7 @@ public class Transcoder {
             else inputFps = Math.round(CodecUtils.detectFps(inPutFilePath));
 
             if (inputFps <= 0)
-                inputFps = Constants.DEFAULT_FPS;
+                inputFps = EditConstants.DEFAULT_FPS;
 
 //            try {
 //                inputFps = decoderInputVideoFormat.getInteger(MediaFormat.KEY_FRAME_RATE);

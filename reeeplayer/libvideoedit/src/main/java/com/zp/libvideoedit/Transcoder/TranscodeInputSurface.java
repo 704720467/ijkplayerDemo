@@ -10,7 +10,7 @@ import android.opengl.EGLSurface;
 import android.util.Log;
 import android.view.Surface;
 
-import static com.zp.libvideoedit.Constants.GL_DEBUG;
+import static com.zp.libvideoedit.EditConstants.GL_DEBUG;
 
 
 /**

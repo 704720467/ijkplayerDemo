@@ -5,24 +5,19 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPUSize;
 import com.zp.libvideoedit.Time.CMTime;
 import com.zp.libvideoedit.Time.CMTimeRange;
 import com.zp.libvideoedit.exceptions.InvalidVideoSourceException;
 import com.zp.libvideoedit.modle.Transition.Origentation;
 import com.zp.libvideoedit.modle.effectModel.EffectAdapter;
-import com.zp.libvideoedit.modle.effectModel.EffectType;
-import com.zp.libvideoedit.utils.Common;
 import com.zp.libvideoedit.utils.EffectAdapterSortBySortPosition;
-import com.zp.libvideoedit.utils.LookupInstance;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.UUID;
 
 
 /**
@@ -181,7 +176,7 @@ public class AVProject {
 //                    } else {
 //                        dirPath = AeResourceDownloadModule.getLocalPath(modulesBean.getUrl(), 1, null);
 //                    }
-//                    if (Constants.VERBOSE) Log.i("debbug", "dirPath=" + dirPath);
+//                    if (EditConstants.VERBOSE) Log.i("debbug", "dirPath=" + dirPath);
 //                    CMTimeRange timeRange = new CMTimeRange(modulesBean.getContentTimeRangeString());
 //                    CMTime atTime = new CMTime(modulesBean.getTimeRange().get(0), modulesBean.getTimeRange().get(1));
 //
@@ -215,9 +210,9 @@ public class AVProject {
 ////                    maskPath = maskPath + oriStr + ".mp4";
 ////                    maskExtPath = maskExtPath + oriStr + ".mp4";
 ////                    try {
-////                        if (Constants.VERBOSE)
+////                        if (EditConstants.VERBOSE)
 ////                            Log.i("Check_Typesetting_Path", "projectFromScriptBean_Typesetting Path maskPath：" + maskPath + "；Is Exists=" + FileUtils.fileIsExists(maskPath));
-////                        if (Constants.VERBOSE)
+////                        if (EditConstants.VERBOSE)
 ////                            Log.i("Check_Typesetting_Path", "projectFromScriptBean_Typesetting Path maskExtPath：" + maskExtPath + "；Is Exists=" + FileUtils.fileIsExists(maskExtPath));
 ////                        adapter.setMaskVideoChunk(new Chunk(maskPath, context, false));
 ////                        adapter.setMaskExtVideoChunk(new Chunk(maskExtPath, context, false));
@@ -604,7 +599,7 @@ public class AVProject {
                     chunks.add(chunk);
                 }
             } catch (Exception e) {
-                Log.w(Constants.TAG_M, "AVProject_getChunkWithSecond:" + second + ", chunk:" + chunk);
+                Log.w(EditConstants.TAG_M, "AVProject_getChunkWithSecond:" + second + ", chunk:" + chunk);
             }
         }
 

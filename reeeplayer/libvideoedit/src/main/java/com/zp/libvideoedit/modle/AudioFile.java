@@ -8,7 +8,7 @@ import android.util.Log;
 import android.util.LruCache;
 
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.Time.CMTime;
 import com.zp.libvideoedit.exceptions.InvalidVideoSourceException;
 import com.zp.libvideoedit.utils.CodecUtils;
@@ -17,8 +17,8 @@ import com.zp.libvideoedit.utils.MediaUtils;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
 
 
 public class AudioFile {
@@ -115,7 +115,7 @@ public class AudioFile {
     public static LruCache<String, AudioFile> audioFileLruCache = new LruCache<String, AudioFile>(30);
 
     /**
-     * @param path assert:// 为前缀，会从assert中读取，否则认为是绝对路径 @see Constants.ASSERT_FILE_PREFIX)
+     * @param path assert:// 为前缀，会从assert中读取，否则认为是绝对路径 @see EditConstants.ASSERT_FILE_PREFIX)
      * @return null，没有音频轨道
      * @throws InvalidVideoSourceException
      */
@@ -156,16 +156,16 @@ public class AudioFile {
             try {
                 audioFile.setBitrate(audioformart.getInteger(MediaFormat.KEY_BIT_RATE));
             } catch (Exception e) {
-                Log.w(Constants.TAG, "can not get bitrate of file:" + path);
+                Log.w(EditConstants.TAG, "can not get bitrate of file:" + path);
             }
             try {
                 audioFile.setSampleRate(audioformart.getInteger(MediaFormat.KEY_SAMPLE_RATE));
             } catch (Exception e) {
-                Log.w(Constants.TAG, "can not get sampleRate of file:" + path);
+                Log.w(EditConstants.TAG, "can not get sampleRate of file:" + path);
             }
             float duration = 0;
             if (audioformart.containsKey(MediaFormat.KEY_DURATION))
-                duration = ((float) audioformart.getLong(MediaFormat.KEY_DURATION)) / Constants.US_MUTIPLE;
+                duration = ((float) audioformart.getLong(MediaFormat.KEY_DURATION)) / EditConstants.US_MUTIPLE;
             else {
                 duration = CodecUtils.getDurationMS(context, path) * 1.0f / 1000.0f;
             }
@@ -176,11 +176,11 @@ public class AudioFile {
 //				int cc=detectAudioChannelCount(path);
                 audioFile.setChannelCount(cc);
             } catch (Exception e) {
-                Log.w(Constants.TAG, "can not get KEY_CHANNEL_COUNT of file:" + path);
+                Log.w(EditConstants.TAG, "can not get KEY_CHANNEL_COUNT of file:" + path);
             }
 
-            if (Constants.VERBOSE_LOOP_A) {
-                Log.d(Constants.TAG_AUDIO_INFO, "videoFileInfo:" + audioFile);
+            if (EditConstants.VERBOSE_LOOP_A) {
+                Log.d(EditConstants.TAG_AUDIO_INFO, "videoFileInfo:" + audioFile);
             }
             audioFileLruCache.put(path, audioFile);
             return audioFile;
@@ -190,7 +190,7 @@ public class AudioFile {
         } finally {
             extractor.release();
             if (VERBOSE)
-                Log.i(Constants.TAG_AUDIO_INFO, "getAudioFileInfo elpased time:" + (System.currentTimeMillis() - startTime));
+                Log.i(EditConstants.TAG_AUDIO_INFO, "getAudioFileInfo elpased time:" + (System.currentTimeMillis() - startTime));
         }
 
     }
@@ -204,7 +204,7 @@ public class AudioFile {
             for (int index = 0; index < extractor.getTrackCount(); index++) {
                 MediaFormat format = extractor.getTrackFormat(index);
                 String mimeType = format.getString(MediaFormat.KEY_MIME);
-                Log.d(Constants.TAG, "format for track " + index + " is " + mimeType);
+                Log.d(EditConstants.TAG, "format for track " + index + " is " + mimeType);
                 if (mimeType.startsWith("audio/")) {
                     extractor.selectTrack(index);
                     break;
@@ -229,8 +229,8 @@ public class AudioFile {
                 boolean hasNext = extractor.advance();
 
                 prePts = pts;
-                if (Constants.VERBOSE_LOOP_A) {
-                    Log.d(Constants.TAG_AUDIO_INFO, "timebase.pts:" + pts);
+                if (EditConstants.VERBOSE_LOOP_A) {
+                    Log.d(EditConstants.TAG_AUDIO_INFO, "timebase.pts:" + pts);
                 }
                 if (!hasNext)
                     break;
@@ -238,8 +238,8 @@ public class AudioFile {
             if (count == 0)
                 return 0;
             long timebase = Math.round(sum / count);
-            if (Constants.VERBOSE_LOOP_A) {
-                Log.d(Constants.TAG_AUDIO_INFO, "timebase:" + timebase);
+            if (EditConstants.VERBOSE_LOOP_A) {
+                Log.d(EditConstants.TAG_AUDIO_INFO, "timebase:" + timebase);
             }
 
             return timebase;
@@ -287,7 +287,7 @@ public class AudioFile {
             while (!sawOutputEOS && loopCount <= 200) {
 
                 if (!sawInputEOS) {
-                    int inputBufIndex = decoder.dequeueInputBuffer(Constants.TIMEOUT_USEC);
+                    int inputBufIndex = decoder.dequeueInputBuffer(EditConstants.TIMEOUT_USEC);
 
                     if (inputBufIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
                         loopCount++;
@@ -312,7 +312,7 @@ public class AudioFile {
                     }
                 }
 
-                int outputIndex = decoder.dequeueOutputBuffer(bufferInfo, Constants.TIMEOUT_USEC);
+                int outputIndex = decoder.dequeueOutputBuffer(bufferInfo, EditConstants.TIMEOUT_USEC);
 
                 if (outputIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
                     loopCount++;
@@ -324,7 +324,7 @@ public class AudioFile {
                     continue;
                 }
                 if (outputIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                    Log.d(Constants.TAG_A, "INFO_OUTPUT_BUFFERS_CHANGED");
+                    Log.d(EditConstants.TAG_A, "INFO_OUTPUT_BUFFERS_CHANGED");
 
                     decoderOutputBuffers = decoder.getOutputBuffers();
                     continue;
@@ -332,7 +332,7 @@ public class AudioFile {
 
                 if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                     audioFormart = decoder.getOutputFormat();
-                    Log.d(Constants.TAG_A, "INFO_OUTPUT_FORMAT_CHANGED");
+                    Log.d(EditConstants.TAG_A, "INFO_OUTPUT_FORMAT_CHANGED");
                     break;
                 }
                 if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
@@ -381,7 +381,7 @@ public class AudioFile {
             for (int index = 0; index < extractor.getTrackCount(); index++) {
                 MediaFormat format = extractor.getTrackFormat(index);
                 String mimeType = format.getString(MediaFormat.KEY_MIME);
-                Log.d(Constants.TAG, "format for track " + index + " is " + mimeType);
+                Log.d(EditConstants.TAG, "format for track " + index + " is " + mimeType);
                 if (mimeType.startsWith("audio/")) {
                     extractor.selectTrack(index);
                     break;
@@ -406,8 +406,8 @@ public class AudioFile {
                 boolean hasNext = extractor.advance();
 
                 prePts = pts;
-                if (Constants.VERBOSE_LOOP_A) {
-                    Log.d(Constants.TAG_AUDIO_INFO, "timebase.pts:" + pts);
+                if (EditConstants.VERBOSE_LOOP_A) {
+                    Log.d(EditConstants.TAG_AUDIO_INFO, "timebase.pts:" + pts);
                 }
                 if (!hasNext)
                     break;
@@ -415,8 +415,8 @@ public class AudioFile {
             if (count == 0)
                 return 0;
             long timebase = Math.round(sum / count);
-            if (Constants.VERBOSE_LOOP_A) {
-                Log.d(Constants.TAG_AUDIO_INFO, "timebase:" + timebase);
+            if (EditConstants.VERBOSE_LOOP_A) {
+                Log.d(EditConstants.TAG_AUDIO_INFO, "timebase:" + timebase);
             }
 
             return timebase;

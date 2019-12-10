@@ -18,10 +18,10 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import static com.zp.libvideoedit.Constants.GL_DEBUG;
-import static com.zp.libvideoedit.Constants.TAG_EN;
-import static com.zp.libvideoedit.Constants.TAG_TR;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.GL_DEBUG;
+import static com.zp.libvideoedit.EditConstants.TAG_EN;
+import static com.zp.libvideoedit.EditConstants.TAG_TR;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
 
 

@@ -3,7 +3,7 @@ package com.zp.libvideoedit.GPUImage.FilterCore;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GLProgram;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageFrameBuffer;
@@ -202,7 +202,7 @@ public class GPUImageThreeInputFilter extends GPUImageTwoInput {
     @Override
     public void newFrameReadyAtTime(long frameTime, int textureIndex) {
         currentFrameIndex = frameTime;
-        currentTime = new CMTime(frameTime, Constants.NS_MUTIPLE);
+        currentTime = new CMTime(frameTime, EditConstants.NS_MUTIPLE);
         if (hasReceivedFirstFrame && hasReceivedSecondFrame && hasReceivedThirdFrame) {
             return;
         }

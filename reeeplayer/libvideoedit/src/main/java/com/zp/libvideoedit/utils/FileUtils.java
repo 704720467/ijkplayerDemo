@@ -5,10 +5,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.R;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -21,9 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -493,7 +490,7 @@ public class FileUtils {
         }
 
         try {
-            File resources = new File(Constants.TEMP_SPECIAL_PATH);
+            File resources = new File(EditConstants.TEMP_SPECIAL_PATH);
             deleteAllFile(resources);
         } catch (Exception e) {
             e.printStackTrace();
@@ -501,7 +498,7 @@ public class FileUtils {
 
         //视频提取的音乐
         try {
-            File resources = new File(Constants.EXTRACT_AUDIO_PATH);
+            File resources = new File(EditConstants.EXTRACT_AUDIO_PATH);
             deleteAllFile(resources);
 
             SharedPreferencesTools.setParam(context, "video2audio", "");

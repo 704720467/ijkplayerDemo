@@ -6,8 +6,8 @@ import com.zp.libvideoedit.modle.TrackType;
 
 import java.nio.ShortBuffer;
 
-import static com.zp.libvideoedit.Constants.TAG_A_MIX;
-import static com.zp.libvideoedit.Constants.VERBOSE_A_MIX;
+import static com.zp.libvideoedit.EditConstants.TAG_A_MIX;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_A_MIX;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
 import static java.lang.Math.max;
 

@@ -3,7 +3,7 @@ package com.zp.libvideoedit.GPUImage.Filter;
 import android.renderscript.Matrix4f;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.FilterCore.GPUImageTransformFilter;
 
 import java.nio.FloatBuffer;
@@ -36,8 +36,8 @@ public class VNiTailterTextTransitionFilter extends GPUImageTransformFilter {
             Matrix4f matrix4f = new Matrix4f();
             matrix4f.loadIdentity();
             float scaleValue = ((1.0f-0.93f) / 3.f) * ((float) currentTime.getSecond() - startTime) + 0.93f;
-            if (Constants.VERBOSE_GL)
-                Log.d(Constants.TAG_GL, "VNiTailerBlendFilter_calcScale:  " + scaleValue+" currentTime: "+currentTime.getSecond()+ "  start: "+startTime);
+            if (EditConstants.VERBOSE_GL)
+                Log.d(EditConstants.TAG_GL, "VNiTailerBlendFilter_calcScale:  " + scaleValue+" currentTime: "+currentTime.getSecond()+ "  start: "+startTime);
             matrix4f.scale(scaleValue, scaleValue, 1.f);
             setTransform3D(matrix4f.getArray());
             return;

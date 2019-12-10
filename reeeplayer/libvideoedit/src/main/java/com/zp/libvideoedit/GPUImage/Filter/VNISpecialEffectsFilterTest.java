@@ -8,7 +8,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageFrameBuffer;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageTextureCoordinates;
@@ -198,8 +198,8 @@ public class VNISpecialEffectsFilterTest extends GPUImageFilter {
             GLES20.glUniform1i(matterTexture, 3);
         }
 
-        if (Constants.VERBOSE_GL)
-            Log.d(Constants.TAG_GL, "GPUImageAlphaBlendFilter_renderToTextureWithVertices" + ",Size: " + sizeOfFBO());
+        if (EditConstants.VERBOSE_GL)
+            Log.d(EditConstants.TAG_GL, "GPUImageAlphaBlendFilter_renderToTextureWithVertices" + ",Size: " + sizeOfFBO());
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glFlush();
 

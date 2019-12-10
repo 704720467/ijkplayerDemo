@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="@android:color/transparent">
+
+    <cn.reee.reeeplayer.view.CutScrollLayout.KLHorizontalScrollView
+        android:id="@+id/content_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout
+            android:id="@+id/video_cover_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!--左边填充布局-->
+            <View
+                android:id="@+id/left_margin_view"
+                android:layout_width="100px"
+                android:layout_height="108px"
+                android:layout_centerVertical="true" />
+            <!--中间视频图片添加-->
+            <cn.reee.reeeplayer.view.AdapterView.ZpLinearLayout
+                android:id="@+id/middle_video_cover_content"
+                android:layout_width="wrap_content"
+                android:layout_height="108px"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/left_margin_view"
+                android:orientation="horizontal" />
+            <!--右边填充布局-->
+            <View
+                android:id="@+id/right_margin_view"
+                android:layout_width="100px"
+                android:layout_height="108px"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/middle_video_cover_content" />
+            <!--选中遮罩-->
+            <LinearLayout
+                android:id="@+id/select_view_mask_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="108px"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal" />
+        </cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>
+
+    </cn.reee.reeeplayer.view.CutScrollLayout.KLHorizontalScrollView>
+
+    <View
+        android:layout_width="4px"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:background="#ffffff" />
+</cn.reee.reeeplayer.view.AdapterView.ZpRelativeLayout>

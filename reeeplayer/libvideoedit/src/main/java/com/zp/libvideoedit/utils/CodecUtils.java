@@ -15,7 +15,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Size;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.exceptions.EffectException;
 import com.zp.libvideoedit.exceptions.EffectRuntimeException;
 
@@ -25,14 +25,14 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.zp.libvideoedit.Constants.ASSERT_FILE_PREFIX;
-import static com.zp.libvideoedit.Constants.DEFAULT_PBB;
-import static com.zp.libvideoedit.Constants.TAG;
-import static com.zp.libvideoedit.Constants.TAG_V;
-import static com.zp.libvideoedit.Constants.TIMEOUT_USEC;
-import static com.zp.libvideoedit.Constants.US_MUTIPLE;
-import static com.zp.libvideoedit.Constants.VERBOSE;
-import static com.zp.libvideoedit.Constants.VERBOSE_LOOP_A;
+import static com.zp.libvideoedit.EditConstants.ASSERT_FILE_PREFIX;
+import static com.zp.libvideoedit.EditConstants.DEFAULT_PBB;
+import static com.zp.libvideoedit.EditConstants.TAG;
+import static com.zp.libvideoedit.EditConstants.TAG_V;
+import static com.zp.libvideoedit.EditConstants.TIMEOUT_USEC;
+import static com.zp.libvideoedit.EditConstants.US_MUTIPLE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_LOOP_A;
 
 
 /**
@@ -258,7 +258,7 @@ public class CodecUtils {
 
     public static void checkMediaExist(Context context, String mediaPath) {
         if (mediaPath == null || mediaPath.length() == 0) throw new RuntimeException("输入文件为空");
-        if (mediaPath.startsWith(Constants.ASSERT_FILE_PREFIX)) {
+        if (mediaPath.startsWith(EditConstants.ASSERT_FILE_PREFIX)) {
             if (!isAssertExist(context, mediaPath)) {
                 throw new RuntimeException("输入assert文件不存在:" + mediaPath);
             }
@@ -312,8 +312,8 @@ public class CodecUtils {
 
     public static MediaExtractor createExtractor(Context context, String inPutFilePath) throws IOException {
         MediaExtractor extractor = new MediaExtractor();
-        if (inPutFilePath.startsWith(Constants.ASSERT_FILE_PREFIX)) {
-            String assertPath = inPutFilePath.substring(Constants.ASSERT_FILE_PREFIX.length());
+        if (inPutFilePath.startsWith(EditConstants.ASSERT_FILE_PREFIX)) {
+            String assertPath = inPutFilePath.substring(EditConstants.ASSERT_FILE_PREFIX.length());
             AssetFileDescriptor assetFileDescriptor = context.getAssets().openFd(assertPath);
             extractor.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
         } else {

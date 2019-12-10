@@ -32,6 +32,12 @@ android {
 //            version "3.10.2"
 //        }
 //    }
+
+
+    packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libRSSupport.so'
+    }
+
 }
 
 dependencies {
@@ -46,5 +52,10 @@ dependencies {
     implementation project(':libvideoedit')
     implementation project(':permission')
     implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
+
+    implementation ('jp.wasabeef:glide-transformations:4.0.0'){
+        exclude group:'com.github.bumptech.glide'
+    }
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
 //    compile project(':ijkplayer-armv7a')
 }

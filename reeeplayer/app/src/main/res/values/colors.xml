@@ -17,4 +17,7 @@
     <color name="ijk_transparent_dark">#77000000</color>
     <color name="transparent">#00000000</color>
 
+    <color name="black">#000000</color>
+
+
 </resources>

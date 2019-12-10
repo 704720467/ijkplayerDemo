@@ -13,7 +13,7 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.R;
 import com.zp.libvideoedit.utils.CodecUtils;
 
@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 
-import static com.zp.libvideoedit.Constants.TAG_TR;
-import static com.zp.libvideoedit.Constants.VERBOSE_EN;
-import static com.zp.libvideoedit.Constants.VERBOSE_TR;
+import static com.zp.libvideoedit.EditConstants.TAG_TR;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_EN;
+import static com.zp.libvideoedit.EditConstants.VERBOSE_TR;
 import static com.zp.libvideoedit.utils.CodecUtils.createExtractor;
 import static com.zp.libvideoedit.utils.CodecUtils.getAndSelectVideoTrackIndex;
 import static com.zp.libvideoedit.utils.FormatUtils.caller;
@@ -158,7 +158,7 @@ public class TranscoderNew {
             else inputFps = Math.round(CodecUtils.detectFps(inPutFilePath));
 
             if (inputFps <= 0)
-                inputFps = Constants.DEFAULT_FPS;
+                inputFps = EditConstants.DEFAULT_FPS;
 
 
             if (decoderInputVideoFormat.containsKey(MediaFormat.KEY_ROTATION))
@@ -205,7 +205,7 @@ public class TranscoderNew {
             if (VERBOSE_TR)
                 Log.i(TAG_TR, Thread.currentThread().getName() + "|_invalid bitRate,use " + bitRate + "kbps");
 
-            int totalFrame = (int) (inputFps * durationUs / Constants.US_MUTIPLE);
+            int totalFrame = (int) (inputFps * durationUs / EditConstants.US_MUTIPLE);
             if (countOfThumb > totalFrame && countOfThumb > 0) {
                 throw new TranscodeRunTimeException("预览图过多,总共只有:" + totalFrame + "帧,却需要" + countOfThumb + "张图");
             }

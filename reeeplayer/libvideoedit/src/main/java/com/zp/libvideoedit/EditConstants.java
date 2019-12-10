@@ -4,7 +4,7 @@ import android.media.AudioFormat;
 import android.os.Environment;
 
 
-public class Constants {
+public class EditConstants {
     public static final String TAG = "AE_COMMON";
     /**
      * 是否打印log

@@ -3,7 +3,7 @@ package com.zp.libvideoedit.GPUImage.FilterCore;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import com.zp.libvideoedit.Constants;
+import com.zp.libvideoedit.EditConstants;
 import com.zp.libvideoedit.GPUImage.Core.GLProgram;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageContext;
 import com.zp.libvideoedit.GPUImage.Core.GPUImageFrameBuffer;
@@ -115,10 +115,10 @@ public class GPUImageTwoInput extends GPUImageFilter {
 
     @Override
     public void newFrameReadyAtTime(long frameTime, int textureIndex) {
-        if (Constants.VERBOSE_GL)
+        if (EditConstants.VERBOSE_GL)
             Log.d("GPUImageTwoInput", "newFrameReadyAtTime  ,textureIndex:  " + textureIndex);
         currentFrameIndex = frameTime;
-        currentTime = new CMTime(frameTime, Constants.NS_MUTIPLE);
+        currentTime = new CMTime(frameTime, EditConstants.NS_MUTIPLE);
         if (hasReceivedFirstFrame && hasReceivedSecondFrame) return;
         if (textureIndex == 0) {
             hasReceivedFirstFrame = true;
@@ -142,8 +142,8 @@ public class GPUImageTwoInput extends GPUImageFilter {
 
     public void renderAtTime(long frameTime, int textureIndex) {
         currentFrameIndex = frameTime;
-        currentTime = new CMTime(frameTime, Constants.NS_MUTIPLE);
-//       if(Constants.VERBOSE_GL) Log.d(Constants.TAG_GL, "GPUImageFilter CurrentTime: " + CMTime.getSecond(currentTime));
+        currentTime = new CMTime(frameTime, EditConstants.NS_MUTIPLE);
+//       if(EditConstants.VERBOSE_GL) Log.d(EditConstants.TAG_GL, "GPUImageFilter CurrentTime: " + CMTime.getSecond(currentTime));
         this.renderToTextureWithVertices(GPUUtiles.directFloatBufferFromFloatArray(GPUImageTextureCoordinates.squareVertices), GPUUtiles.directFloatBufferFromFloatArray(GPUImageTextureCoordinates.textureCoordinates), frameTime);
         this.informTargetsAboutNewFrameAtTime(frameTime);
     }
