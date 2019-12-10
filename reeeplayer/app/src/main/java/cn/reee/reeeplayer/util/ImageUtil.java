@@ -17,12 +17,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.zp.libvideoedit.utils.ToastUtil;
 
 import java.io.File;
 
 import cn.reee.reeeplayer.R;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 
 /**
  * Create by zp on 2019-11-18
@@ -236,7 +234,7 @@ public class ImageUtil {
         RequestOptions option = new RequestOptions()
                 .placeholder(placeholder)
                 .centerCrop()
-                .transform(new BlurTransformation(14, 3))
+//                .transform(new BlurTransformation(14, 3))
                 .dontAnimate();
 
         Glide.with(imageView.getContext())
